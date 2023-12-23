@@ -13,6 +13,24 @@
   }
 }
 
+.all-products {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 100px;
+}
+
+.card {
+  
+  border-width: 1px;
+  border-color: rgb(0, 0, 0);
+  border-radius: 10px;
+  width: 302px;
+  height: 433px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.23);
+  
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
