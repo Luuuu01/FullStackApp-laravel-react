@@ -1,7 +1,8 @@
-import logo from "./logo.svg";
 import "./App.css";
 import { useState } from "react";
 import Jela from './components/jela';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import NavBar from "./components/navBar";
 
 function App() {
   const sastojci = [
@@ -128,9 +129,20 @@ function App() {
   ]);
 
   return (
-    <div className="App">
-      <Jela nizJela={nizJela}/>
-    </div>
+    <BrowserRouter>
+    <NavBar/>
+    
+    
+      <div className='cssjela'>
+      
+      <Routes>
+        <Route path="/" element={<Jela nizJela={nizJela}/>}/>
+        <Route path="/svajela" element={ <Jela nizJela={nizJela}/> } />
+        
+      </Routes>
+      </div>
+      
+      </BrowserRouter>
   );
 }
 
