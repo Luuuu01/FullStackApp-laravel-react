@@ -1,0 +1,56 @@
+.button-container {
+    display: flex;
+    flex-direction: column; 
+    margin-top: 8px; 
+  }
+  
+  button {
+    
+    width: 200px; 
+    margin-bottom: 4px; 
+    padding: 8px; 
+    border-color:#FFA500;
+  }
+  
+  .card {
+    
+    border-width: 1px;
+    border-color: rgb(0, 0, 0);
+    border-radius: 10px;
+    width: 302px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.23);
+    
+  }
+  
+  .filter{
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      padding: 20px;
+  }
+  
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .FiltriranaJela{
+      overflow: auto;
+      display: flex;
+      flex-wrap: wrap;
+      
+  }
+  
+  .checkbox-icon {
+    display: flex;
+    align-items: center;
+    margin-right: 5px;
+    font-size: 20px;
+    color: #FFA500;
+  }
+  
+  .dugmici {
+    display: none;
+  }
+  
