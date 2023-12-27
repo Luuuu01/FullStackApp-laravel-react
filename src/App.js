@@ -4,6 +4,7 @@ import Jela from "./components/jela";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NavBar from "./components/navBar";
 import Filter from "./components/filter";
+import ContactPage from "./components/contactPage";
 
 function App() {
   const sastojci = [
@@ -140,6 +141,7 @@ function App() {
             element={<Filter sastojci={sastojci} products={nizJela} />}
           />
           <Route path="/svajela" element={<Jela nizJela={nizJela} />} />
+          <Route path="/Contact" element={<ContactPage />} />
         </Routes>
       </div>
     </BrowserRouter>
