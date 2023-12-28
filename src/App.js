@@ -5,6 +5,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NavBar from "./components/navBar";
 import Filter from "./components/filter";
 import ContactPage from "./components/contactPage";
+import Login from "./components/login";
+import Register from "./components/register";
 
 function App() {
   const sastojci = [
@@ -140,6 +142,8 @@ function App() {
             path="/"
             element={<Filter sastojci={sastojci} products={nizJela} />}
           />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/svajela" element={<Jela nizJela={nizJela} />} />
           <Route path="/Contact" element={<ContactPage />} />
         </Routes>
