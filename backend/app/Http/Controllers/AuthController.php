@@ -35,13 +35,23 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::attempt($request->only('email', 'password'))) {
+<<<<<<< HEAD
             return response() ->json(['success'=> false]);
+=======
+            throw ValidationException::withMessages([
+                'email' => ['The provided credentials are incorrect.'],
+            ]);
+>>>>>>> origin/main
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
 
+<<<<<<< HEAD
         return response()->json(['success' => true, 'token' => $token, 'token_type'=>'Bearer',]);
+=======
+        return response()->json(['token' => $token]);
+>>>>>>> origin/main
     }
 
     public function logout(Request $request)
