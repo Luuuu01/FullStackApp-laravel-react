@@ -9,10 +9,22 @@ use App\Models\Recipe;
 
 class RecipeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $recipes = Recipe::all();
-        return RecipeResource::collection($recipes); // Koristimo Resource za formatiranje
+        $query = Recipe::query();
+
+        if ($request->has('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        if ($request->has('ingredient')) {
+            $query->whereHas('ingredients', function ($q) use ($request) {
+                $q->where('ingredient_id', $request->ingredient);
+            });
+        }
+
+        $recipes = $query->paginate(10);
+        return RecipeResource::collection($recipes);
     }
 
     public function store(Request $request)
@@ -33,6 +45,9 @@ class RecipeController extends Controller
 
     public function update(Request $request, Recipe $recipe)
     {
+        if ($recipe->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
         $validatedData = $request->validate([
             'name' => 'string|max:255',
             'description' => 'string',

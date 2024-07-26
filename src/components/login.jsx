@@ -3,22 +3,37 @@ import "./login.css";
 import { Link } from "react-router-dom";
 import { TbPasswordUser } from "react-icons/tb";
 import { TbWritingSign } from "react-icons/tb";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
-  };
+  let navigate=useNavigate();
+  const [loginData, setloginData]= useState({
+    email: "",
+    password: "",
+  });
 
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
+  function handleInput(e){
+    let newloginData=loginData;
+    newloginData[e.target.name]=e.target.value;
+    setloginData(newloginData);
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Implement login logic
+    axios
+    .post("api/login",loginData)
+    .then((res) => {
+      console.log(res.data);
+      if(res.data.success===true){
+        window.sessionStorage.setItem("auth_token",res.data.token)
+        navigate("/svajela")
+      }
+    })
+    .catch((e) =>{
+      console.log(e);
+    })
   };
 
   return (
@@ -26,13 +41,13 @@ const Login = () => {
       <form className="login-form" onSubmit={handleSubmit}>
         <h2>Login</h2>
         <label>
-          Username:
+          Email:
           <div style={{ position: "relative" }}>
             <input
               type="text"
-              value={username}
-              onChange={handleUsernameChange}
-              placeholder="Enter your username"
+              onInput={handleInput}
+              name="email"
+              placeholder="Enter your email"
               style={{ paddingRight: "30px" }} // Dodajte prostor za ikonu
             />
             <TbWritingSign
@@ -52,8 +67,8 @@ const Login = () => {
           <div style={{ position: "relative" }}>
             <input
               type="password"
-              value={password}
-              onChange={handlePasswordChange}
+              onInput={handleInput}
+              name="password"
               placeholder="Enter your password"
               style={{ paddingRight: "30px" }} // Dodajte prostor za ikonu
             />
@@ -71,7 +86,7 @@ const Login = () => {
         </label>
         <button type="submit">Login</button>
         <p>
-          Nemaš account? <Link to="/register">Registruj se</Link>
+          Nemaš nalog? <Link to="/register">Registruj se</Link>
         </p>
       </form>
     </div>

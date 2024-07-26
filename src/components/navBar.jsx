@@ -31,18 +31,19 @@ function NavBar() {
       </Link>
       <Link
         to="/login"
-        className={`Login ${location.pathname === "/login" ? "active" : ""}`}
+              className={`Login ${
+                  location.pathname === "/login" ? "active" : ""}`}
       >
         Login
       </Link>
-      <Link
+      {/* <Link
         to="/register"
         className={`Register ${
           location.pathname === "/register" ? "active" : ""
         }`}
       >
         Register
-      </Link>{" "}
+      </Link>{" "} */}
     </div>
   );
 }

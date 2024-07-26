@@ -1,30 +1,39 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./register.css";
 import { TbPasswordUser } from "react-icons/tb";
 import { MdEmail } from "react-icons/md";
 import { TbWritingSign } from "react-icons/tb";
+import axios from "axios";
 
 const Register = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
+  
+  let navigate=useNavigate();
+  const [registerData, setRegisterData]= useState({
+    name:"",
+    email: "",
+    password: "",
+  });
 
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
+  function handleInput(e){
+    let newRegisterData=registerData;
+    newRegisterData[e.target.name]=e.target.value;
+    setRegisterData(newRegisterData);
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: Implement registration logic
+    axios
+    .post("api/register",registerData)
+    .then((res) => {
+      console.log(res.data);
+      navigate("/login");
+    })
+    .catch((e) =>{
+      console.log(e);
+    })
   };
+
 
   return (
     <div className="register-form-container">
@@ -40,12 +49,14 @@ const Register = () => {
           />
         </label> */}
         <label>
-          Username:
+          Name:
           <div style={{ position: "relative" }}>
             <input
               type="text"
-              value={username}
-              onChange={handleUsernameChange}
+              
+             
+              name="name"
+              onInput={handleInput}
               placeholder="Enter your username"
               style={{ paddingRight: "30px" }} // Dodajte prostor za ikonu
             />
@@ -67,8 +78,9 @@ const Register = () => {
           <div style={{ position: "relative" }}>
             <input
               type="email"
-              value={email}
-              onChange={handleEmailChange}
+              
+              name="email"
+              onInput={handleInput}
               placeholder="Enter your email"
               style={{ paddingRight: "30px" }} // Dodajte prostor za ikonu
             />
@@ -85,23 +97,16 @@ const Register = () => {
           </div>
         </label>
         <br />
-        {/* <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={handlePasswordChange}
-            placeholder="Enter your password"
-            style={{ paddingRight: "30px" }}
-          />
-        </label> */}
+        
         <label>
           Password:
           <div style={{ position: "relative" }}>
             <input
               type="password"
-              value={password}
-              onChange={handlePasswordChange}
+              
+              
+              name="password"
+              onInput={handleInput}
               placeholder="Enter your password"
               style={{ paddingRight: "30px" }} // Dodajte prostor za ikonu
             />
