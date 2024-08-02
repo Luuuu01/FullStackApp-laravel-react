@@ -35,23 +35,15 @@ class AuthController extends Controller
         ]);
 
         if (!Auth::attempt($request->only('email', 'password'))) {
-<<<<<<< HEAD
-            return response() ->json(['success'=> false]);
-=======
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
->>>>>>> origin/main
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
 
-<<<<<<< HEAD
-        return response()->json(['success' => true, 'token' => $token, 'token_type'=>'Bearer',]);
-=======
         return response()->json(['token' => $token]);
->>>>>>> origin/main
     }
 
     public function logout(Request $request)
@@ -60,6 +52,7 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'User logged out']);
     }
+
     public function forgotPassword(Request $request)
     {
         $request->validate(['email' => 'required|email']);
@@ -70,6 +63,6 @@ class AuthController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
 
-        // ... (generisanje tokena za reset lozinke, slanje email-a korisniku)
+        // ... (generate password reset token, send email to user)
     }
 }
