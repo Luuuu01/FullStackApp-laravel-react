@@ -6,7 +6,7 @@ import { TbWritingSign } from "react-icons/tb";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Login = ({addToken}) => {
 
   let navigate=useNavigate();
   const [loginData, setloginData]= useState({
@@ -28,6 +28,7 @@ const Login = () => {
       console.log(res.data);
       if(res.data.success===true){
         window.sessionStorage.setItem("auth_token",res.data.token)
+        addToken(res.data.token);
         navigate("/svajela")
       }
     })

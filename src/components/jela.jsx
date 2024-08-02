@@ -1,11 +1,22 @@
 import React from 'react'
 import JednoJelo from './jednoJelo'
+import axios from 'axios'
+import { useState, useEffect} from 'react'
 
-const Jela = ({nizJela}) => {
-
+const Jela = () => {
+    const [recipes,setRecipes]=useState();
+    useEffect(()=>{
+        if(recipes==null){
+            axios.get("/api/recipes").then((res)=>{
+                console.log(res.data);
+                setRecipes(res.data.data);
+            })
+        }
+            
+    })
     return (
         <div className="all-products">
-            {nizJela.map((jelo) => (
+            {recipes == null ? <h1>ne</h1>  : recipes.map((jelo) => (
             <JednoJelo jelo={jelo} />
       ))}
 

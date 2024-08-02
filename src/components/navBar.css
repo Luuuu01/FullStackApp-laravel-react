@@ -19,6 +19,10 @@
       color:white;
   }
 
+  .Logout:hover{
+    color:white;
+  }
+
 .Register:hover {
     color:white;
 }
@@ -51,7 +55,7 @@
       }
 
       .titl.active,
-.SvaJela.active , .Kontakt.active, .Login.active,.Register.active{
+.SvaJela.active , .Kontakt.active,Logout.titl.active, .Login.active,.Register.active{
   background-color: #ffb835;
 }
 

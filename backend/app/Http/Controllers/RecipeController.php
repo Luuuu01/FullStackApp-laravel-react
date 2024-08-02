@@ -11,19 +11,20 @@ class RecipeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Recipe::query();
+        // $query = Recipe::query();
 
-        if ($request->has('category')) {
-            $query->where('category_id', $request->category);
-        }
+        // if ($request->has('category')) {
+        //     $query->where('category_id', $request->category);
+        // }
 
-        if ($request->has('ingredient')) {
-            $query->whereHas('ingredients', function ($q) use ($request) {
-                $q->where('ingredient_id', $request->ingredient);
-            });
-        }
+        // if ($request->has('ingredient')) {
+        //     $query->whereHas('ingredients', function ($q) use ($request) {
+        //         $q->where('ingredient_id', $request->ingredient);
+        //     });
+        // }
 
-        $recipes = $query->paginate(10);
+        // $recipes = $query->paginate(10);
+        $recipes=Recipe::all();
         return RecipeResource::collection($recipes);
     }
 
