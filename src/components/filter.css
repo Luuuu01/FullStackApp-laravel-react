@@ -53,4 +53,9 @@
   .dugmici {
     display: none;
   }
+
+  .JednoJeloKlasa{
+    border-left: 110px;
+    border-right: 110px;
+  }
   

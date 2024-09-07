@@ -1,39 +1,65 @@
-import React, { useState } from 'react';
 import JednoJelo from './jednoJelo';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 import './filter.css';
-import { MdOutlineKitchen,MdKitchen } from "react-icons/md";
+import { MdOutlineKitchen, MdKitchen } from "react-icons/md";
 
-
-const Filter = ({ sastojci, products }) => {
+const Filter = () => {
+  const [recipes, setRecipes] = useState([]);
+  const [sastojci, setSastojci] = useState([]);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
 
+  useEffect(() => {
+    axios.get("/api/recipes")
+      .then((res) => {
+        console.log(res.data);
+        setRecipes(res.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching recipes:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios.get("/api/ingredients")
+      .then((res) => {
+        console.log(res.data);
+        setSastojci(res.data.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching ingredients:", error);
+      });
+  }, []);
+
   const handleIngredientChange = (ingredient) => {
-    if (selectedIngredients.includes(ingredient)) {
-      setSelectedIngredients((prevSelected) =>
-        prevSelected.filter((item) => item !== ingredient)
-      );
-    } else {
-      setSelectedIngredients((prevSelected) => [...prevSelected, ingredient]);
-    }
+    setSelectedIngredients((prevSelected) => 
+      prevSelected.includes(ingredient)
+        ? prevSelected.filter((item) => item !== ingredient)
+        : [...prevSelected, ingredient]
+    );
   };
 
+  
+
   const renderFilteredJela = () => {
- 
-    const filteredJela = products.filter((jelo) => {
-      return jelo.sastojci.every((sastojak) => {
-        return selectedIngredients.includes(sastojak);
+    const filteredJela = recipes.filter((jelo) => {
+      // Check if all ingredients of the current jelo are in selectedIngredients
+      return jelo.ingredients.every((sastojak) => {
+        return selectedIngredients.includes(sastojak.name);
       });
     });
-  
+
     console.log('Filtered Jela:', filteredJela);
-  
+
     return filteredJela.map((jelo) => (
-      <div className='JednoJeloKlasa'>
-      <JednoJelo jelo={jelo}/>
-      </div>
+        <div className='JednoJeloKlasa' key={jelo.id}>
+            <JednoJelo jelo={jelo} />
+        </div>
     ));
-  };
-  
+};
+
+    
+
 
   console.log('Selected Ingredients:', selectedIngredients);
 
@@ -42,32 +68,33 @@ const Filter = ({ sastojci, products }) => {
       <div className="checkbox-group">
         <label>Izaberite sastojke koje imate:</label>
         <div className="button-container">
-          {sastojci.map((sastojak) => (
-            <label key={sastojak} className="labela">
-              <div className="checkbox-icon">
-                <input
-                  type="checkbox"
-                  value={sastojak}
-                  className="dugmici"
-                  onChange={() => handleIngredientChange(sastojak)}
-                />
-                {selectedIngredients.includes(sastojak) ? (
-                  <MdKitchen />
-                ) : (
-                  <MdOutlineKitchen />
-                )}
-              
-              {sastojak}
-              </div>
-            </label>
-          ))}
+          {sastojci.length > 0 ? (
+            sastojci.map((sastojak) => (
+              <label key={sastojak.id} className="labela">
+                <div className="checkbox-icon">
+                  <input
+                    type="checkbox"
+                    value={sastojak.name}
+                    className="dugmici"
+                    onChange={() => handleIngredientChange(sastojak.name)}
+                  />
+                  {selectedIngredients.includes(sastojak.name) ? (
+                    <MdKitchen />
+                  ) : (
+                    <MdOutlineKitchen />
+                  )}
+                  {sastojak.name}
+                </div>
+              </label>
+            ))
+          ) : (
+            <p>Loading ingredients...</p>
+          )}
         </div>
       </div>
       <div className='FiltriranaJela'>
-        
-          {renderFilteredJela()}
-          
-          </div>
+        {renderFilteredJela()}
+      </div>
     </div>
   );
 };

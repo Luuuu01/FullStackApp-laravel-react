@@ -1,0 +1,48 @@
+.sastojci {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap; /* Obezbeđuje da stavke budu u jednoj koloni */
+    max-height: 150px; /* Podesi maksimalnu visinu po potrebi */
+    overflow-y: auto; /* Omogućava skrolovanje ako je lista veća od maksimalne visine */
+    list-style: none; /* Uklanja oznake liste */
+    padding: 0; /* Uklanja padding */
+    margin-left: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .sastojci li {
+    margin: 4px 0; /* Razmak između stavki */
+  }
+  
+
+  .card-img-top {
+    width: 300px; /* širina slike */
+    height: 250px; /* visina slike */
+    border-radius: 10px;
+  }
+  
+  .card-title{
+    margin-top: 0px;
+    margin-left: 6px;
+  }
+  
+  .prep-time {
+    display: flex;
+    justify-content: center; /* Centriranje sadržaja */
+    margin: 10px 0; /* Razmak iznad i ispod */
+    font-weight: 500; 
+  }
+  
+  
+  .card {
+    
+    border-width: 1px;
+    border-color: rgb(0, 0, 0);
+    border-radius: 10px;
+    width: 302px;
+    height: 485px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.23);
+    
+    
+  }

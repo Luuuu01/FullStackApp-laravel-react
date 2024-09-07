@@ -12,6 +12,7 @@ use App\Http\Controllers\AuthController;
 // Javne rute (bez autentifikacije)
 Route::apiResource('recipes', RecipeController::class)->only('index', 'show');
 Route::apiResource('ingredients', IngredientController::class)->only('index', 'show');
+Route::post('/upload', 'App\Http\Controllers\ImageController@upload');
 
 // Zaštićene rute (zahtevaju autentifikaciju)
 Route::middleware('auth:sanctum')->group(function () {

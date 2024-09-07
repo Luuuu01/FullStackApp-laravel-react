@@ -27,7 +27,27 @@ class IngredientSeeder extends Seeder
             ['name' => 'Paradajz', 'unit' => 'kom'],
             ['name' => 'Mocarela sir', 'unit' => 'g'],
             ['name' => 'Piletina', 'unit' => 'g'],
-            ['name' => 'Brokoli', 'unit' => 'g'],
+            ['name' => 'Mrkva', 'unit' => 'g'],
+            ['name' => 'Krompir', 'unit' => 'g'],
+            ['name' => 'Testenina', 'unit' => 'g'],
+            ['name' => 'Kakao prah', 'unit' => 'g'],
+            ['name' => 'Zelena salata', 'unit' => 'g'],
+            ['name' => 'Parmezan sir', 'unit' => 'g'],
+            ['name' => 'Krutoni', 'unit' => 'g'],
+            ['name' => 'Jagoda', 'unit' => 'g'],
+            ['name' => 'Banana', 'unit' => 'kom'],
+            ['name' => 'Jogurt', 'unit' => 'ml'],
+            ['name' => 'Mleveno meso', 'unit' => 'g'],
+            ['name' => 'Crni luk', 'unit' => 'g'],
+            ['name' => 'Paradajz sos', 'unit' => 'g'],
+            ['name' => 'Pirinac', 'unit' => 'g'],
+            ['name' => 'Kukuruzno brašno', 'unit' => 'g'],
+            ['name' => 'Voda', 'unit' => 'ml'],
+            ['name' => 'So', 'unit' => 'g'],
+            ['name' => 'Paprika', 'unit' => 'g'],
+            ['name' => 'Tikvice', 'unit' => 'kom']
+            
+            
             // ... dodaj ostale sastojke po potrebi
         ];
 

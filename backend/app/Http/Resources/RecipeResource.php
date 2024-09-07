@@ -14,6 +14,7 @@ class RecipeResource extends JsonResource
             'description' => $this->description,
             'prep_time' => $this->prep_time, // Ako imaš kolonu prep_time
             'ingredients' => IngredientResource::collection($this->ingredients), // Uključujemo sastojke
+            'slika' => $this->slika,
         ];
     }
 }
