@@ -60,6 +60,7 @@ class RecipeSeeder extends Seeder
             'description' => 'Ukusna pizza',
             'prep_time' => 30,
             'slika' => 'https://padariabandeirantes4.com.br/yl/wp-content/uploads/2015/09/pizza1-300x250.jpg',
+            'opis' => 'Pripremite testo mešanjem brašna, vode, soli i malo ulja, pa ostavite da odstoji. Nakon što se testo podigne, razvucite ga i stavite na pleh. Preko testa rasporedite paradajz sos, pospite rendanom mocarelom i dodajte ostale sastojke. Pecite u prethodno zagrejanoj pećnici dok kora ne postane zlatno smeđa.',
         ]);
 
         $pizza = Recipe::where('name', 'Pizza')->first();
@@ -73,6 +74,7 @@ class RecipeSeeder extends Seeder
             'description' => 'Zdravo i ukusno jelo sa piletinom i sezonskim povrćem.',
             'prep_time' => 45,
             'slika' => 'https://healthyfitnessmeals.com/wp-content/uploads/2022/02/Sheet-pan-Chicken-and-Veggies-7-500x500.jpg',
+            'opis' => 'Na zagrejanom ulju propržite piletinu dok ne porumeni, a zatim dodajte seckano povrće (paradajz, paprika, krompir). Posolite, pobiberite i dodajte malo vode, pa poklopite. Kuvajte na laganoj vatri dok piletina ne omekša, a povrće ne bude skuvano.'
         ]);
 
         $piletinaSaPovrcem = Recipe::where('name', 'Piletina sa povrćem')->first();
@@ -88,6 +90,7 @@ class RecipeSeeder extends Seeder
             'description' => 'Domaća pileća supa za okrepljenje',
             'prep_time' => 60,
             'slika' => 'https://recipes.net/wp-content/uploads/2023/07/spring-vegetable-broth-with-shredded-chicken_819094540604d3ee87b03361352d221b-300x250.jpeg',
+            'opis' => 'U vodu stavite piletinu, krompir i mrkvu, a zatim dodajte testeninu. Kuvajte dok se meso ne skuva, a povrće ne omekša. Po želji, začinite solju i biberom.',
         ]);
         
         $soup = Recipe::where('name', 'Pileća supa')->first();
@@ -102,6 +105,7 @@ class RecipeSeeder extends Seeder
             'description' => 'Sočan i ukusan čokoladni kolač',
             'prep_time' => 45,
             'slika' => 'https://www.bakingclassinchennai.com/blog/wp-content/uploads/2017/12/Chocolate-cake-slice-in-dish-delicious-wallpapers-300x250.jpg',
+            'opis' => 'Pomešajte suve sastojke (brašno, kakao, šećer) sa umućenim jajima, mlekom i rastopljenim puterom. Sipajte smesu u pleh i pecite dok kolač ne postane čvrst. Ohladite i pospite šećerom u prahu pre serviranja.',
         ]);
         
         $cake = Recipe::where('name', 'Čokoladni kolač')->first();
@@ -117,6 +121,7 @@ class RecipeSeeder extends Seeder
             'description' => 'Klasična Cezar salata sa hrskavim krutonima',
             'prep_time' => 20,
             'slika' => 'https://www.foodsala.com/wp-content/uploads/2024/01/0328-ceasar-salad-lede-scaled.webp',
+            'opis' => 'U posudi pomešajte zelenu salatu, seckane krutone i rendani parmezan. Prelijte sa Cezar prelivom (možete napraviti od majoneza, limunovog soka i začina) i dobro promešajte.',
         ]);
         
         $salad = Recipe::where('name', 'Cezar salata')->first();
@@ -132,6 +137,7 @@ class RecipeSeeder extends Seeder
             'description' => 'Tanke i mekane palačinke za slatki doručak',
             'prep_time' => 30,
             'slika' => 'https://bigoven-res.cloudinary.com/image/upload/w_300,c_fill,h_250/fluffy-pancakes-52.jpg',
+            'opis' => 'Pomešajte brašno, jaja, mleko i malo šećera kako biste dobili glatko testo. Na vrućem tiganju pecite tanke palačinke sa obe strane. Poslužite sa omiljenim prelivima, poput džema ili meda.',
         ]);
         
         $pancakes = Recipe::where('name', 'Palacinke')->first();
@@ -147,6 +153,7 @@ class RecipeSeeder extends Seeder
             'description' => 'Osvežavajući smoothie za zdrav početak dana',
             'prep_time' => 10,
             'slika' => 'https://nourishplate.com/wp-content/uploads/2021/06/Apple-Banana-Smoothie-Recipe-7.jpg',
+            'opis' => 'Sve sastojke (jagode, banane, jogurt) stavite u blender i blendajte dok ne dobijete glatku smesu. Sipajte u čaše i uživajte u osvežavajućem napitku.',
         ]);
         
         $smoothie = Recipe::where('name', 'Smoothie od jagode i banane')->first();
@@ -161,6 +168,7 @@ class RecipeSeeder extends Seeder
             'description' => 'Slojevito jelo sa mlevenim mesom, bešamel sosom i sirom',
             'prep_time' => 90,
             'slika' => 'https://d17zv3ray5yxvp.cloudfront.net/variants/Wk4Me1PDhq75KXYfwFvNkqm6/d643816d5f22835bda887419d1c7851c5db89be85ac093be6baace40ae811261',
+            'opis' => 'Na dno vatrostalnog jela stavite sloj testenine, zatim sloj mlevenog mesa sa paradajz sosom, pa ponovite dok ne potrošite sastojke. Prelijte bešamel sosom, pospite sirom i pecite u pećnici dok ne dobije zlatnu boju.',
         ]);
 
         $lasagna = Recipe::where('name', 'Lazanje')->first();
@@ -180,6 +188,7 @@ class RecipeSeeder extends Seeder
             'description' => 'Tradicionalna musaka sa krompirom, mlevenim mesom i bešamelom',
             'prep_time' => 75,
             'slika' => 'https://www.cooliranje.com/images/tt/2013/10/t_2898025_musaka_sa_krompirom_i_mlevenim_mesom_admin_cool_v.jpg',
+            'opis' => 'Na dnu posude poređajte slojeve krompira, pa mlevenog mesa i paradajz sosa. Prelijte mešavinom jaja i mleka. Kuvajte u rerni dok se ne zapeče i dobije zlatnu boju.',
         ]);
         
         $musaka = Recipe::where('name', 'Musaka')->first();
@@ -200,6 +209,7 @@ class RecipeSeeder extends Seeder
             'description' => 'Jelo od povrća sa pirinčem, pečeno u rerni',
             'prep_time' => 60,
             'slika' => 'https://www.recepti.com/img/recipe/32419-djuvec-na-moj-nacin_zoom.jpg',
+            'opis' => 'U vatrostalnoj posudi pomešajte pirinač, seckano povrće (papriku, paradajz, tikvice) i crni luk. Prelijte vodom i začinite po ukusu. Pokrijte i kuvajte u rerni dok pirinač ne omekša.',
         ]);
         
         $djuvec = Recipe::where('name', 'Đuveč')->first();
@@ -218,6 +228,7 @@ class RecipeSeeder extends Seeder
             'description' => 'Paprike punjene mlevenim mesom i pirinčem, kuvane u paradajz sosu',
             'prep_time' => 75,
             'slika' => 'https://glaszabjela.me/wp-content/uploads/2018/11/naslovna.jpg',
+            'opis' => 'Paprike napunite smesom od mlevenog mesa, pirinča i začina. Stavite ih u lonac, prelijte paradajz sosom i kuvajte na laganoj vatri dok paprika ne omekša.',
         ]);
         
         $punjenePaprike = Recipe::where('name', 'Punjene paprike')->first();
@@ -233,6 +244,7 @@ class RecipeSeeder extends Seeder
             'description' => 'Slojevito jelo sa makaranama, mlevenim mesom i bešamel sosom',
             'prep_time' => 90,
             'slika' => 'https://saratogaoliveoil.com/cdn/shop/articles/puttanesca-2.jpg?v=1681323391',
+            'opis' => 'Povrće i meso propržite na ulju, a zatim dodajte paradajz sos. Kada se sos zagreje, dodajte kuvanu testeninu i dobro promešajte. Poslužite toplo sa parmezanom.',
         ]);
         
         $pasta = Recipe::where('name', 'Pasta')->first();
@@ -250,6 +262,7 @@ class RecipeSeeder extends Seeder
             'description' => 'Gusto jelo od kukuruznog brašna, idealno za hladnije dane',
             'prep_time' => 30,
             'slika' => 'https://media.ilovezrenjanin.com/2021/02/hajducki-kacamak1.jpg',
+            'opis' => 'Prokuvajte vodu, a zatim dodajte kukuruzno brašno postepeno mešajući. Kuvajte dok se ne zgusne, a zatim posolite i dodajte puter po želji.',
         ]);
         
         $kacamak = Recipe::where('name', 'Kačamak')->first();

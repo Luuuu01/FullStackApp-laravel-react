@@ -7,6 +7,7 @@ import Filter from "./components/filter";
 import ContactPage from "./components/contactPage";
 import Login from "./components/login";
 import Register from "./components/register";
+import RecipePage from "./components/recipepage";
 
 function App() {
 
@@ -17,20 +18,19 @@ function App() {
   }
 
   return (
+
     <BrowserRouter>
-      
 
       <div className="cssjela">
+
         <Routes>
           <Route path="/login" element={<Login addToken={addToken}/>} />
           <Route path="/register" element={<Register />} />
           <Route path="/Contact" element={<ContactPage />} />
-          <Route path="/" element={<NavBar token={token} />}>
+          <Route path="/" element={<NavBar token={token} />} >
           <Route path="svajela" element={<Jela/>} />
-          <Route
-            path="filter"
-            element={<Filter/>}
-          />
+          <Route path="filter" element={<Filter/>} />
+          <Route path="/recipe/:id" element={<RecipePage />} />
           </Route>
         </Routes>
       </div>

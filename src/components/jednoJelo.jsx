@@ -1,9 +1,14 @@
 import React from "react";
 import "./jednojelo.css";
+import { useNavigate } from 'react-router-dom';
 
 
 const JednoJelo = ({jelo}) => {
-  
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/recipe/${jelo.id}`); // Navigacija ka stranici za recept
+  };
 
   return (
     <div className="card" style={{ margin: 25, borderStyle: "solid" }}>
@@ -20,8 +25,10 @@ const JednoJelo = ({jelo}) => {
             ))}
               
           </ul>
+          
         </div>
       </div>
+      <button className="buttonRecipe" onClick={handleClick}>Pogledaj recept</button>
     </div>
   );
 };

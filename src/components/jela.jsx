@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useState, useEffect} from 'react'
 
 const Jela = () => {
+
     const [recipes,setRecipes]=useState();
     useEffect(()=>{
         if(recipes==null){
@@ -11,15 +12,15 @@ const Jela = () => {
                 console.log(res.data);
                 setRecipes(res.data.data);
             })
-        }
-            
+        }         
+
     })
+
     return (
         <div className="all-products">
             {recipes == null ? <h1>ne</h1>  : recipes.map((jelo) => (
-            <JednoJelo jelo={jelo} />
+             <JednoJelo key={jelo.id} jelo={jelo} />
       ))}
-
         </div>
     )
 }
