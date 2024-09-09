@@ -68,5 +68,12 @@
     align-items: center;
   
 }
+
+.cart-icon {
+  margin-top: 3px; /* ili */
+  /* transform: translateY(2px); */
+  /* ovo može pomoći da se ikona poravna s tekstom */
+}
+
       
      

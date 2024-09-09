@@ -88,7 +88,7 @@ axios.request(config)
               className={`Cart ${
                   location.pathname === "/cart" ? "active" : ""}`}
       >
-        <IoCartOutline /> Cart
+        <IoCartOutline className="cart-icon"/> Cart
         </Link>
       
     </div>

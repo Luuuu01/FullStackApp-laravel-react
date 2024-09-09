@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './css/cartitem.css';
+import { Link } from 'react-router-dom';
 
 function Cart() {
   const [items, setItems] = useState([]);
@@ -50,12 +51,13 @@ function Cart() {
             <ul className="cart-items">
                 {items.map(item => (
                     <li key={item.id} className="cart-item">
-                        
+                        <Link to={`/recipe/${item.recipe.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                         <img src={item.recipe.slika} alt={item.recipe.name} style={{ width: '200px', height: '150px' }} />
                         <div className="cart-item-info">
-                        <h3>{item.recipe.name}</h3>
-                        <p>Prep Time: {item.recipe.prep_time} minutes</p>
+                            <h3>{item.recipe.name}</h3>
+                            <p>Prep Time: {item.recipe.prep_time} minutes</p>
                         </div>
+                    </Link>
                         <button onClick={() => handleDelete(item.id)}>Remove from Cart</button>
                     </li>
                 ))}
