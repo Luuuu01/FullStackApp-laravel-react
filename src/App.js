@@ -9,6 +9,7 @@ import Login from "./components/login";
 import Register from "./components/register";
 import RecipePage from "./components/recipepage";
 import ForgotPassword from "./components/forgotPassword";
+import Cart from "./components/cartItem";
 
 function App() {
 
@@ -31,6 +32,7 @@ function App() {
           <Route path="/" element={<NavBar token={token} />} >
           <Route path="recipes" element={<Jela/>} />
           <Route path="filter" element={<Filter/>} />
+          <Route path="/cart" element={<Cart/>} />
           <Route path="/recipe/:id" element={<RecipePage />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           </Route>

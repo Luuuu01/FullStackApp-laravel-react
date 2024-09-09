@@ -1,0 +1,94 @@
+/* Globalni stil za elegantan i moderan izgled */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+ /* Stil za kontejner korpe */
+/* Stil za kontejner korpe */
+.cart-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  /* Lista korpa stavki */
+  .cart-items {
+    display: flex; /* Omogućava flexbox */
+    flex-wrap: wrap; /* Omogućava prelazak u novi red */
+    justify-content: flex-start; /* Poravnava stavke levo */
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  /* Stilizacija svake stavke kao kartica */
+  .cart-item {
+    flex: 1 1 calc(30% - 20px); /* Prilagođava širinu na 30% i ostavlja razmak */
+    margin: 10px; /* Razmak između stavki */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .cart-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Stil za sliku recepta */
+  .cart-item img {
+    width: 100%; /* Prilagođava sliku da zauzme punu širinu */
+    height: auto; /* Automatski prilagođava visinu */
+    border-radius: 8px;
+    object-fit: cover;
+  }
+  
+  /* Informacije o receptu */
+  .cart-item-info {
+    margin-top: 10px; /* Razmak iznad informacija o receptu */
+  }
+  
+  .cart-item-info h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+  }
+  
+  .cart-item-info p {
+    margin: 10px 0;
+    font-size: 1rem;
+    color: #666;
+  }
+  
+  /* Dugme za uklanjanje stavke iz korpe */
+  .cart-item button {
+    padding: 10px 20px;
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .cart-item button:hover {
+    background-color: #ff1a1a;
+  }
+  
+  /* Stil za praznu korpu */
+  .empty-cart {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #888;
+    padding: 50px 0;
+  }
+  

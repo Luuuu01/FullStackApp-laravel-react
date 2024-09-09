@@ -4,6 +4,7 @@ import { LuChefHat } from "react-icons/lu";
 import "./css/navBar.css";
 import axios from "axios";
 import { Outlet } from "react-router-dom";
+import { IoCartOutline } from "react-icons/io5";
 
 function NavBar({token}) {
   const location = useLocation();
@@ -46,7 +47,7 @@ axios.request(config)
         <LuChefHat className="ikonica" /> Receptorijum
       </Link>
       <Link
-        to="/svajela"
+        to="/recipes"
         className={`SvaJela ${
           location.pathname === "/svajela" ? "active" : ""
         }`}
@@ -80,7 +81,15 @@ axios.request(config)
         Logout
       
       </Link>
+      
       }
+      <Link
+        to="/cart"
+              className={`Cart ${
+                  location.pathname === "/cart" ? "active" : ""}`}
+      >
+        <IoCartOutline /> Cart
+        </Link>
       
     </div>
     <Outlet/>

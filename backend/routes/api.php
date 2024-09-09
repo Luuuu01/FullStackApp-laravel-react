@@ -18,7 +18,9 @@ Route::post('/upload', 'App\Http\Controllers\ImageController@upload');
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('recipes', RecipeController::class)->except('index', 'show');
     Route::apiResource('ingredients', IngredientController::class)->except('index', 'show');
-    Route::apiResource('cart-items', CartItemController::class);
+    Route::get('/cart-items', [CartItemController::class, 'index'])->middleware('auth:sanctum');
+    Route::delete('/cart-items/{id}', [CartItemController::class, 'destroy'])->middleware('auth:sanctum');
+    Route::post('/cart-items/', [CartItemController::class, 'store'])->middleware('auth:sanctum');
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
@@ -33,5 +35,10 @@ Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestF
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
+
+
+Route::middleware('auth:sanctum')->get('/cart', [CartItemController::class, 'index']);
+Route::middleware('auth:sanctum')->delete('/cart/{item}', [CartItemController::class, 'remove']);
+
 
 

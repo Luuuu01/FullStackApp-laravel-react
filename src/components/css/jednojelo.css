@@ -30,9 +30,11 @@
   .prep-time {
     display: flex;
     justify-content: center; /* Centriranje sadržaja */
-    margin: 10px 0; /* Razmak iznad i ispod */
+    margin-top: 0px;
+    margin-bottom: 10px;/* Razmak iznad i ispod */
     font-weight: 500; 
   }
+  
   
   
   .card {
@@ -44,6 +46,7 @@
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     width: 300px;
+    margin-bottom: 5px;
   }
 
   .buttonRecipe {

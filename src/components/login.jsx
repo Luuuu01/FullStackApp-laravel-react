@@ -30,21 +30,19 @@ const Login = ({ addToken }) => {
       if (response.data.success) {
         window.sessionStorage.setItem("auth_token", response.data.token);
         addToken(response.data.token);
-        navigate("/svajela");
+        navigate("/recipes");
         setMessage('Login successful!');
         setStatus('success');
       } else {
         setMessage(response.data.message || 'Login failed.');
         setStatus('error');
-        setTimeout(() => {
-          navigate("/svajela"); 
-        }, 4000); 
+         
       }
     } catch (error) {
       setMessage(error.response?.data?.message || 'An error occurred.');
       setStatus('error');
       setTimeout(() => {
-        navigate("/svajela"); 
+        navigate("/recipes"); 
       }, 4000); 
     } finally {
       setLoading(false);

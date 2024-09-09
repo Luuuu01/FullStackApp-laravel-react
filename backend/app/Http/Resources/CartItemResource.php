@@ -10,7 +10,6 @@ class CartItemResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'quantity' => $this->quantity,
             'recipe' => new RecipeResource($this->recipe), // Uključujemo podatke o receptu
         ];
     }
