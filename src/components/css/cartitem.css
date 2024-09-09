@@ -1,4 +1,4 @@
-/* Globalni stil za elegantan i moderan izgled */
+
 body {
     font-family: 'Arial', sans-serif;
     background-color: #f4f4f9;
@@ -8,8 +8,7 @@ body {
     box-sizing: border-box;
   }
   
- /* Stil za kontejner korpe */
-/* Stil za kontejner korpe */
+
 .cart-container {
     max-width: 1200px;
     margin: 40px auto;
@@ -19,19 +18,19 @@ body {
     border-radius: 8px;
   }
   
-  /* Lista korpa stavki */
+ 
   .cart-items {
-    display: flex; /* Omogućava flexbox */
-    flex-wrap: wrap; /* Omogućava prelazak u novi red */
-    justify-content: flex-start; /* Poravnava stavke levo */
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: flex-start; 
     list-style-type: none;
     padding: 0;
   }
   
-  /* Stilizacija svake stavke kao kartica */
+  
   .cart-item {
-    flex: 1 1 calc(30% - 20px); /* Prilagođava širinu na 30% i ostavlja razmak */
-    margin: 10px; /* Razmak između stavki */
+    flex: 1 1 calc(30% - 20px); 
+    margin: 10px; 
     padding: 20px;
     background-color: #f9f9f9;
     border: 1px solid #ddd;
@@ -44,17 +43,17 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   }
   
-  /* Stil za sliku recepta */
+ 
   .cart-item img {
-    width: 100%; /* Prilagođava sliku da zauzme punu širinu */
-    height: auto; /* Automatski prilagođava visinu */
+    width: 100%; 
+    height: auto; 
     border-radius: 8px;
     object-fit: cover;
   }
   
-  /* Informacije o receptu */
+ 
   .cart-item-info {
-    margin-top: 10px; /* Razmak iznad informacija o receptu */
+    margin-top: 10px;
   }
   
   .cart-item-info h3 {
@@ -69,7 +68,7 @@ body {
     color: #666;
   }
   
-  /* Dugme za uklanjanje stavke iz korpe */
+ 
   .cart-item button {
     padding: 10px 20px;
     background-color: #ff4d4d;
@@ -84,7 +83,7 @@ body {
     background-color: #ff1a1a;
   }
   
-  /* Stil za praznu korpu */
+  
   .empty-cart {
     text-align: center;
     font-size: 1.2rem;

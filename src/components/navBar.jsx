@@ -5,17 +5,18 @@ import "./css/navBar.css";
 import axios from "axios";
 import { Outlet } from "react-router-dom";
 import { IoCartOutline } from "react-icons/io5";
+import { useEffect } from "react";
 
 function NavBar({token}) {
   const location = useLocation();
+  useEffect(() => {
+    console.log("Token changed:", token);
+  }, [token]);
   
 
   function handleLogout(e)
   {
-    let data = new FormData();
-data.append('email', 'andrija@gmail.com');
-data.append('password', 'andrija123');
-data.append('name', 'andrija');
+    
 
 let config = {
   method: 'post',
@@ -34,7 +35,6 @@ axios.request(config)
 .catch((error) => {
   console.log(error);
 });
-
    
   }
   return (
@@ -54,16 +54,9 @@ axios.request(config)
       >
         Sva Jela
       </Link>
-      <Link
-        to="/Contact"
-        className={`Kontakt ${
-          location.pathname === "/Contact" ? "active" : ""
-        }`}
-      >
-        Kontakt
-      </Link>
+      
       {
-      token == null ?
+      !token ?
       <Link
         to="/login"
               className={`Login ${
@@ -81,8 +74,8 @@ axios.request(config)
         Logout
       
       </Link>
+       }
       
-      }
       <Link
         to="/cart"
               className={`Cart ${

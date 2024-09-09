@@ -1,7 +1,7 @@
 import JednoJelo from './jednoJelo';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import './filter.css';
+import './css/filter.css';
 import { MdOutlineKitchen, MdKitchen } from "react-icons/md";
 
 const Filter = () => {

@@ -2,7 +2,8 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap; /* Obezbeđuje da stavke budu u jednoj koloni */
-    max-height: 150px; /* Podesi maksimalnu visinu po potrebi */
+    max-height: 130px; /* Podesi maksimalnu visinu po potrebi */
+    min-height: 130px;
     overflow-y: auto; /* Omogućava skrolovanje ako je lista veća od maksimalne visine */
     list-style: none; /* Uklanja oznake liste */
     padding: 0; /* Uklanja padding */
