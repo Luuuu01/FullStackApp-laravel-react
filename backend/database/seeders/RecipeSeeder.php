@@ -269,6 +269,6 @@ class RecipeSeeder extends Seeder
 
         $kacamak->ingredients()->attach($kukuruznoBrasno, ['quantity' => 300]); 
         $kacamak->ingredients()->attach($voda, ['quantity' => 600]);
-        $kacamak->ingredients()->attach($so, ['quantity' => 10]); // Količina soli po ukusu
+        $kacamak->ingredients()->attach($so, ['quantity' => 10]); 
     }
 }

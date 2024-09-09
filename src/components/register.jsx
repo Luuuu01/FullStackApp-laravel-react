@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./register.css";
+import "./css/register.css";
 import { TbPasswordUser } from "react-icons/tb";
 import { MdEmail } from "react-icons/md";
 import { TbWritingSign } from "react-icons/tb";

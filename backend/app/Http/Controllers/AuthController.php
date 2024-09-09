@@ -7,6 +7,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+
 
 class AuthController extends Controller
 {
@@ -50,16 +59,55 @@ class AuthController extends Controller
 
         return response()->json(['message' => 'User logged out']);
     }
+
     public function forgotPassword(Request $request)
-    {
-        $request->validate(['email' => 'required|email']);
+{
+    $request->validate(['email' => 'required|email']);
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        // ... (generisanje tokena za reset lozinke, slanje email-a korisniku)
+    // Proveri da li korisnik sa datim emailom postoji
+    $user = User::where('email', $request->email)->first();
+    if (!$user) {
+        return response()->json(['message' => 'Email address not found.'], 404);
     }
+
+    // Pošalji reset link
+    try {
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($status === Password::RESET_LINK_SENT) {
+            return response()->json(['message' => 'Reset link sent to your email.']);
+        } else {
+            \Log::error('Password reset link error: ' . trans($status));
+            return response()->json(['message' => 'Error sending reset link.'], 500);
+        }
+    } catch (\Exception $e) {
+        \Log::error('Error sending reset link: ' . $e->getMessage());
+        return response()->json(['message' => 'Error sending reset link.'], 500);
+    }
+}
+
+
+
+
+
+
+    public function testEmail()
+    {
+        try {
+            Mail::raw('This is a test email', function ($message) {
+                $message->to('ilic.andrijaa@gmail.com') // promeni na svoj email
+                        ->subject('Test Email');
+            });
+
+            return response()->json(['message' => 'Email sent!']);
+        } catch (\Exception $e) {
+            Log::error('Error sending test email: ' . $e->getMessage());
+            return response()->json(['message' => 'Error sending email.'], 500);
+        }
+    }
+
+
+
 }

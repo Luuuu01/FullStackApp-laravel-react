@@ -8,6 +8,7 @@ import ContactPage from "./components/contactPage";
 import Login from "./components/login";
 import Register from "./components/register";
 import RecipePage from "./components/recipepage";
+import ForgotPassword from "./components/forgotPassword";
 
 function App() {
 
@@ -26,11 +27,12 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login addToken={addToken}/>} />
           <Route path="/register" element={<Register />} />
-          <Route path="/Contact" element={<ContactPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/" element={<NavBar token={token} />} >
-          <Route path="svajela" element={<Jela/>} />
+          <Route path="recipes" element={<Jela/>} />
           <Route path="filter" element={<Filter/>} />
           <Route path="/recipe/:id" element={<RecipePage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           </Route>
         </Routes>
       </div>

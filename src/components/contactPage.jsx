@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './contactPage.css';
+import './css/contactPage.css';
 import { useForm } from '@formspree/react';
 
 const ContactPage = () => {

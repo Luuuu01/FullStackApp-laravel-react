@@ -1,40 +1,54 @@
 import React, { useState } from "react";
-import "./login.css";
-import { Link } from "react-router-dom";
-import { TbPasswordUser } from "react-icons/tb";
-import { TbWritingSign } from "react-icons/tb";
+import "./css/login.css";
+import { Link, useNavigate } from "react-router-dom";
+import { TbPasswordUser, TbWritingSign } from "react-icons/tb";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
-const Login = ({addToken}) => {
-
-  let navigate=useNavigate();
-  const [loginData, setloginData]= useState({
+const Login = ({ addToken }) => {
+  let navigate = useNavigate();
+  const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
+  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  function handleInput(e){
-    let newloginData=loginData;
-    newloginData[e.target.name]=e.target.value;
-    setloginData(newloginData);
+  function handleInput(e) {
+    const { name, value } = e.target;
+    setLoginData(prevData => ({ ...prevData, [name]: value }));
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios
-    .post("api/login",loginData)
-    .then((res) => {
-      console.log(res.data);
-      if(res.data.success===true){
-        window.sessionStorage.setItem("auth_token",res.data.token)
-        addToken(res.data.token);
-        navigate("/svajela")
+    setLoading(true);
+    setMessage('');
+    setStatus(null);
+
+    try {
+      const response = await axios.post("api/login", loginData);
+      if (response.data.success) {
+        window.sessionStorage.setItem("auth_token", response.data.token);
+        addToken(response.data.token);
+        navigate("/svajela");
+        setMessage('Login successful!');
+        setStatus('success');
+      } else {
+        setMessage(response.data.message || 'Login failed.');
+        setStatus('error');
+        setTimeout(() => {
+          navigate("/svajela"); 
+        }, 4000); 
       }
-    })
-    .catch((e) =>{
-      console.log(e);
-    })
+    } catch (error) {
+      setMessage(error.response?.data?.message || 'An error occurred.');
+      setStatus('error');
+      setTimeout(() => {
+        navigate("/svajela"); 
+      }, 4000); 
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -46,10 +60,10 @@ const Login = ({addToken}) => {
           <div style={{ position: "relative" }}>
             <input
               type="text"
-              onInput={handleInput}
+              onChange={handleInput}
               name="email"
               placeholder="Enter your email"
-              style={{ paddingRight: "30px" }} // Dodajte prostor za ikonu
+              style={{ paddingRight: "30px" }}
             />
             <TbWritingSign
               style={{
@@ -68,10 +82,10 @@ const Login = ({addToken}) => {
           <div style={{ position: "relative" }}>
             <input
               type="password"
-              onInput={handleInput}
+              onChange={handleInput}
               name="password"
               placeholder="Enter your password"
-              style={{ paddingRight: "30px" }} // Dodajte prostor za ikonu
+              style={{ paddingRight: "30px" }}
             />
             <TbPasswordUser
               style={{
@@ -85,10 +99,16 @@ const Login = ({addToken}) => {
             />
           </div>
         </label>
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Logging in...' : 'Login'}
+        </button>
         <p>
-          Nemaš nalog? <Link to="/register">Registruj se</Link>
+          Don't have an account? <Link to="/register">Register</Link>
         </p>
+        <p>
+          Forgot password? <Link to="/forgot-password">Click here</Link>
+        </p>
+        {message && <p className={`message ${status}`}>{message}</p>}
       </form>
     </div>
   );

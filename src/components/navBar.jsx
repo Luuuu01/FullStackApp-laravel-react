@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { LuChefHat } from "react-icons/lu";
-import "./navBar.css";
+import "./css/navBar.css";
 import axios from "axios";
 import { Outlet } from "react-router-dom";
 
@@ -81,14 +81,6 @@ axios.request(config)
       
       </Link>
       }
-      {/* <Link
-        to="/register"
-        className={`Register ${
-          location.pathname === "/register" ? "active" : ""
-        }`}
-      >
-        Register
-      </Link>{" "} */}
       
     </div>
     <Outlet/>
