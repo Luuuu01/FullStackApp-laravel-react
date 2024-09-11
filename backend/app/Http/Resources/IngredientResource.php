@@ -11,7 +11,7 @@ class IngredientResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            // ... (drugi atributi sastojka)
+        
         ];
     }
 }

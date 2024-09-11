@@ -41,9 +41,6 @@ const Login = ({ addToken }) => {
     } catch (error) {
       setMessage(error.response?.data?.message || 'An error occurred.');
       setStatus('error');
-      setTimeout(() => {
-        navigate("/recipes"); 
-      }, 4000); 
     } finally {
       setLoading(false);
     }

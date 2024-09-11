@@ -77,6 +77,8 @@ class RecipeSeeder extends Seeder
             'opis' => 'Na zagrejanom ulju propržite piletinu dok ne porumeni, a zatim dodajte seckano povrće (paradajz, paprika, krompir). Posolite, pobiberite i dodajte malo vode, pa poklopite. Kuvajte na laganoj vatri dok piletina ne omekša, a povrće ne bude skuvano.'
         ]);
 
+        
+
         $piletinaSaPovrcem = Recipe::where('name', 'Piletina sa povrćem')->first();
 
         $piletinaSaPovrcem->ingredients()->attach($piletina, ['quantity' => 200]);

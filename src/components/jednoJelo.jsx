@@ -3,7 +3,6 @@ import "./css/jednojelo.css";
 import { useNavigate } from 'react-router-dom';
 import AddToCartButton from "./addToCart";
 
-
 const JednoJelo = ({jelo}) => {
   const navigate = useNavigate();
 
@@ -31,8 +30,6 @@ const JednoJelo = ({jelo}) => {
       </div>
       <AddToCartButton recipeId={jelo.id} />
       <button className="buttonRecipe" onClick={handleClick}>Pogledaj recept</button>
-      
-
     </div>
   );
 };

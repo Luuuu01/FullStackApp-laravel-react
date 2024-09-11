@@ -12,15 +12,14 @@ use App\Http\Controllers\AuthController;
 // Javne rute (bez autentifikacije)
 Route::apiResource('recipes', RecipeController::class)->only('index', 'show');
 Route::apiResource('ingredients', IngredientController::class)->only('index', 'show');
-Route::post('/upload', 'App\Http\Controllers\ImageController@upload');
 
 // Zaštićene rute (zahtevaju autentifikaciju)
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('recipes', RecipeController::class)->except('index', 'show');
     Route::apiResource('ingredients', IngredientController::class)->except('index', 'show');
-    Route::get('/cart-items', [CartItemController::class, 'index'])->middleware('auth:sanctum');
-    Route::delete('/cart-items/{id}', [CartItemController::class, 'destroy'])->middleware('auth:sanctum');
-    Route::post('/cart-items/', [CartItemController::class, 'store'])->middleware('auth:sanctum');
+    Route::get('/cart-items', [CartItemController::class, 'index']);
+    Route::delete('/cart-items/{id}', [CartItemController::class, 'destroy']);
+    Route::post('/cart-items', [CartItemController::class, 'store']);
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
