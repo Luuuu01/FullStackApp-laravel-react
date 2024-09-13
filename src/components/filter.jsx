@@ -1,6 +1,6 @@
+import React, { useState, useEffect } from 'react';
 import JednoJelo from './jednoJelo';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
 import './css/filter.css';
 import { MdOutlineKitchen, MdKitchen } from "react-icons/md";
 
@@ -8,6 +8,7 @@ const Filter = () => {
   const [recipes, setRecipes] = useState([]);
   const [sastojci, setSastojci] = useState([]);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
+  const [sortOrder, setSortOrder] = useState('asc'); // Stanje za sortiranje
 
   useEffect(() => {
     axios.get("/api/recipes")
@@ -39,33 +40,50 @@ const Filter = () => {
     );
   };
 
-  
+  const handleSortChange = (e) => {
+    setSortOrder(e.target.value);
+  };
 
   const renderFilteredJela = () => {
-    const filteredJela = recipes.filter((jelo) => {
-      // Check if all ingredients of the current jelo are in selectedIngredients
-      return jelo.ingredients.every((sastojak) => {
-        return selectedIngredients.includes(sastojak.name);
-      });
+    let filteredJela = recipes.filter((jelo) => {
+      return jelo.ingredients.every((sastojak) => selectedIngredients.includes(sastojak.name));
+    });
+
+    // Sortiraj jela na osnovu vremena pripreme
+    filteredJela = filteredJela.sort((a, b) => {
+      if (sortOrder === 'asc') {
+        return a.prep_time - b.prep_time;
+      } else {
+        return b.prep_time - a.prep_time;
+      }
     });
 
     console.log('Filtered Jela:', filteredJela);
 
+    if (filteredJela.length === 0) {
+      return <p>Nema recepata sa odabranim sastojcima.</p>;
+    }
+
     return filteredJela.map((jelo) => (
-        <div className='JednoJeloKlasa' key={jelo.id}>
-            <JednoJelo jelo={jelo} />
-        </div>
+      <div className='JednoJeloKlasa' key={jelo.id}>
+        <JednoJelo jelo={jelo} />
+      </div>
     ));
-};
-
-    
-
+  };
 
   console.log('Selected Ingredients:', selectedIngredients);
 
   return (
     <div className="filter">
+      
       <div className="checkbox-group">
+      <div className="sort-options">
+        <label>Sortiraj po vremenu pripreme:</label>
+        <select value={sortOrder} onChange={handleSortChange}>
+          <option value="asc">Rastuće</option>
+          <option value="desc">Opadajuće</option>
+        </select>
+      </div>
         <label>Izaberite sastojke koje imate:</label>
         <div className="button-container">
           {sastojci.length > 0 ? (
@@ -92,6 +110,10 @@ const Filter = () => {
           )}
         </div>
       </div>
+
+      {/* Dodaj opciju za sortiranje */}
+      
+
       <div className='FiltriranaJela'>
         {renderFilteredJela()}
       </div>

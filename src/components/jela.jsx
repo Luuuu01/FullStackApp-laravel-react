@@ -18,7 +18,7 @@ const Jela = () => {
 
     return (
         <div className="all-products">
-            {recipes == null ? <h1>ne</h1>  : recipes.map((jelo) => (
+            {recipes == null ? <h1>Učitavanje jela...</h1>  : recipes.map((jelo) => (
              <JednoJelo key={jelo.id} jelo={jelo} />
       ))}
         </div>
