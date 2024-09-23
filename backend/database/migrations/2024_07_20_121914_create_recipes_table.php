@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->string('slika');
             $table->text('description');
             $table->timestamps();
+            $table->string('slika')->nullable(); // Update the 'slika' column to be nullable
+
         });
     }
 

@@ -10,10 +10,12 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
+        // Check if the authenticated user is an admin
         if (Auth::check() && Auth::user()->is_admin) {
-            return $next($request); // Dozvoli pristup ako je korisnik admin
+            return $next($request);
         }
 
-        return response()->json(['message' => 'Unauthorized.'], 403); // Zabranjen pristup
+        // If not an admin, return a 403 Forbidden response
+        return response()->json(['message' => 'Forbidden'], 403);
     }
 }

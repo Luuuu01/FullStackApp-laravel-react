@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { TbPasswordUser, TbWritingSign } from "react-icons/tb";
 import axios from "axios";
 
-const Login = ({ addToken }) => {
+const Login = ({ addToken, setIsAdmin }) => {
   let navigate = useNavigate();
   const [loginData, setLoginData] = useState({
     email: "",
@@ -24,19 +24,20 @@ const Login = ({ addToken }) => {
     setLoading(true);
     setMessage('');
     setStatus(null);
-
+  
     try {
       const response = await axios.post("api/login", loginData);
       if (response.data.success) {
-        window.sessionStorage.setItem("auth_token", response.data.token);
-        addToken(response.data.token);
-        navigate("/recipes");
+        const { token, is_admin } = response.data; // Get is_admin from response
+        window.sessionStorage.setItem("auth_token", token);
+        addToken(token);
+        setIsAdmin(is_admin); // Set admin status
+        navigate(is_admin ? "/admin-dashboard" : "/recipes"); // Navigate based on admin status
         setMessage('Login successful!');
         setStatus('success');
       } else {
         setMessage(response.data.message || 'Login failed.');
         setStatus('error');
-         
       }
     } catch (error) {
       setMessage(error.response?.data?.message || 'An error occurred.');

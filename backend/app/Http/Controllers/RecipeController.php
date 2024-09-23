@@ -33,6 +33,9 @@ class RecipeController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
+            'prep_time' => 'nullable|integer', // Prep_time može biti null, pošto je nullable
+            'slika' => 'nullable|string', // Slika je nullable i string
+            'opis' => 'nullable|string',  // Opis je nullable
         ]);
 
         $recipe = Recipe::create($validatedData);

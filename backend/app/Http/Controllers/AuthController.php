@@ -37,21 +37,32 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+{
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response() ->json(['success'=> false]);
-        }
-
-        $user = User::where('email', $request->email)->firstOrFail();
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json(['success' => true, 'token' => $token, 'token_type'=>'Bearer',]);
+    // Attempt to authenticate the user
+    if (!Auth::attempt($request->only('email', 'password'))) {
+        return response()->json(['success' => false, 'message' => 'Invalid credentials.'], 401);
     }
+
+    // Retrieve the authenticated user
+    $user = User::where('email', $request->email)->firstOrFail();
+    $token = $user->createToken('auth_token')->plainTextToken;
+
+    // Get the is_admin status from the user
+    $is_admin = $user->is_admin;
+
+    return response()->json([
+        'success' => true,
+        'token' => $token,
+        'token_type' => 'Bearer',
+        'is_admin' => $is_admin,
+    ]);
+}
+
 
     public function logout(Request $request)
     {
