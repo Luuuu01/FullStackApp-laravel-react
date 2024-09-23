@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('recipes', function (Blueprint $table) {
-            $table->text('opis')->change(); // promena tipa kolone na text
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('is_admin')->default(false); // Default vrednost je false
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('recipes', function (Blueprint $table) {
-            $table->string('opis', 255)->change(); // vraćanje na prvobitni tip (prilagodite po potrebi)
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('is_admin');
         });
     }
 };

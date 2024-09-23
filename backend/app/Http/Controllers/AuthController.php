@@ -108,6 +108,28 @@ class AuthController extends Controller
         }
     }
 
+    public function adminLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json(['success' => false], 401);
+        }
+
+        $user = User::where('email', $request->email)->firstOrFail();
+        
+        if ($user->is_admin) { // Provera da li je admin
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return response()->json(['success' => true, 'token' => $token]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+    }
+
+
 
 
 }

@@ -28,6 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
 // Rute za autentifikaciju
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/admin-login', [AuthController::class, 'adminLogin']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::get('password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
@@ -39,5 +40,9 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 Route::middleware('auth:sanctum')->get('/cart', [CartItemController::class, 'index']);
 Route::middleware('auth:sanctum')->delete('/cart/{item}', [CartItemController::class, 'remove']);
 
+
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::post('/recipes', [RecipeController::class, 'store']); // Samo admin može dodati recept
+});
 
 

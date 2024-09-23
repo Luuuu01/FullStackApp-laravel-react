@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('recipes', function (Blueprint $table) {
-            $table->string('opis')->nullable();
+            $table->text('opis')->nullable(); // Add 'opis' column as TEXT
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('recipes', function (Blueprint $table) {
-            $table->dropColumn('opis');
+            $table->dropColumn('opis'); // Remove 'opis' column if rolling back
         });
     }
 };
