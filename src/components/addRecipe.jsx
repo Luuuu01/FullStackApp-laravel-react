@@ -70,6 +70,7 @@ const AddRecipe = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("Recipe before submission:", recipe); 
     const formData = new FormData();
 
     formData.append('name', recipe.name);
@@ -77,7 +78,12 @@ const AddRecipe = () => {
     formData.append('prep_time', recipe.prep_time);
     formData.append('opis', recipe.opis);
     formData.append('slika', recipe.slika);
-    formData.append('ingredients', JSON.stringify(recipe.ingredients));
+
+    // Append ingredients individually
+    recipe.ingredients.forEach((ingredient, index) => {
+        formData.append(`ingredients[${index}][id]`, ingredient.id);
+        formData.append(`ingredients[${index}][quantity]`, ingredient.quantity);
+    });
 
     try {
         const response = await axios.post('api/recipes', formData, {
@@ -86,18 +92,14 @@ const AddRecipe = () => {
                 'Content-Type': 'multipart/form-data',
             },
         });
-        
         console.log('Recipe created:', response.data);
-
         // Update to set the full URL for the uploaded image
         const imagePath = response.data.recipe.slika; // Assuming this returns the relative path
         setUploadedImage(`${imagePath}`); // Combine to form full URL
-        console.log('Uploaded Image URL:', `http://localhost:8000/storage/${imagePath}`); // Debugging line
     } catch (error) {
         console.error('Error creating recipe:', error.response?.data || error.message);
     }
 };
-
 
   // Dropzone functionality
   const { getRootProps, getInputProps } = useDropzone({
@@ -166,8 +168,6 @@ const AddRecipe = () => {
         <img src={uploadedImage} alt="Recipe" className={styles.image} />
     </div>
 )}
-
-
 
         <h3>Ingredients</h3>
         <select

@@ -6,7 +6,7 @@ import { MdOutlineKitchen, MdKitchen } from "react-icons/md";
 
 const Filter = () => {
   const [recipes, setRecipes] = useState([]);
-  const [sastojci, setSastojci] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [sortOrder, setSortOrder] = useState('asc'); // Stanje za sortiranje
 
@@ -25,7 +25,7 @@ const Filter = () => {
     axios.get("/api/ingredients")
       .then((res) => {
         console.log(res.data);
-        setSastojci(res.data.data);
+        setIngredients(res.data.data);
       })
       .catch((error) => {
         console.error("Error fetching ingredients:", error);
@@ -44,13 +44,13 @@ const Filter = () => {
     setSortOrder(e.target.value);
   };
 
-  const renderFilteredJela = () => {
-    let filteredJela = recipes.filter((jelo) => {
-      return jelo.ingredients.every((sastojak) => selectedIngredients.includes(sastojak.name));
+  const renderFilteredRecipes = () => {
+    let filteredRecipes = recipes.filter((recipe) => {
+      return recipe.ingredients.every((ingredient) => selectedIngredients.includes(ingredient.name));
     });
 
     // Sortiraj jela na osnovu vremena pripreme
-    filteredJela = filteredJela.sort((a, b) => {
+    filteredRecipes = filteredRecipes.sort((a, b) => {
       if (sortOrder === 'asc') {
         return a.prep_time - b.prep_time;
       } else {
@@ -58,50 +58,48 @@ const Filter = () => {
       }
     });
 
-    console.log('Filtered Jela:', filteredJela);
+    console.log('Filtered Recipes:', filteredRecipes);
 
-    if (filteredJela.length === 0) {
+    if (filteredRecipes.length === 0) {
       return <p>Nema recepata sa odabranim sastojcima.</p>;
     }
 
-    return filteredJela.map((jelo) => (
-      <div className='JednoJeloKlasa' key={jelo.id}>
-        <JednoJelo jelo={jelo} />
-      </div>
+    return filteredRecipes.map((recipe) => (
+        <JednoJelo recipe={recipe} />
     ));
   };
 
   console.log('Selected Ingredients:', selectedIngredients);
 
   return (
-    <div className="filter">
+    <div className="container">
       
-      <div className="checkbox-group">
+      <div className="left-column">
       <div className="sort-options">
-        <label>Sortiraj po vremenu pripreme:</label>
+        <label>Sort by prep time:</label>
         <select value={sortOrder} onChange={handleSortChange}>
-          <option value="asc">Rastuće</option>
-          <option value="desc">Opadajuće</option>
+          <option value="asc">Ascending</option>
+          <option value="desc">Descending</option>
         </select>
       </div>
-        <label>Izaberite sastojke koje imate:</label>
+        <label>Choose ingredients you have:</label>
         <div className="button-container">
-          {sastojci.length > 0 ? (
-            sastojci.map((sastojak) => (
-              <label key={sastojak.id} className="labela">
+          {ingredients.length > 0 ? (
+            ingredients.map((ingredient) => (
+              <label key={ingredient.id} className="labela">
                 <div className="checkbox-icon">
                   <input
                     type="checkbox"
-                    value={sastojak.name}
+                    value={ingredient.name}
                     className="dugmici"
-                    onChange={() => handleIngredientChange(sastojak.name)}
+                    onChange={() => handleIngredientChange(ingredient.name)}
                   />
-                  {selectedIngredients.includes(sastojak.name) ? (
+                  {selectedIngredients.includes(ingredient.name) ? (
                     <MdKitchen />
                   ) : (
                     <MdOutlineKitchen />
                   )}
-                  {sastojak.name}
+                  {ingredient.name}
                 </div>
               </label>
             ))
@@ -114,8 +112,8 @@ const Filter = () => {
       {/* Dodaj opciju za sortiranje */}
       
 
-      <div className='FiltriranaJela'>
-        {renderFilteredJela()}
+      <div className='right-column'>
+        {renderFilteredRecipes()}
       </div>
     </div>
   );

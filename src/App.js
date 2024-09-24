@@ -27,13 +27,12 @@ function App() {
     <BrowserRouter>
       <div className="cssjela">
         <Routes>
-        
+          <Route path="/admin-dashboard" element={<AdminDashboard isAdmin={isAdmin}/>} />
+          <Route path="/" element={<NavBar token={token} />} >
           <Route path="/login" element={<Login addToken={addToken} setIsAdmin={setIsAdmin}/>} />
           <Route path="/register" element={<Register />} />
-          <Route path="/admin-dashboard" element={<AdminDashboard isAdmin={isAdmin}/>} />
           <Route path="/admin/add-recipe" element={<AddRecipe />} />
           <Route path="/admin/delete-recipe" element={<DeleteRecipe />} />
-          <Route path="/" element={<NavBar token={token} />} >
           <Route path="recipes" element={<Jela/>} />
           <Route path="filter" element={<Filter/>} />
           <Route path="/cart" element={<Cart/>} />

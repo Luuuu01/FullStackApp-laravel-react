@@ -31,7 +31,18 @@ class RecipeController extends Controller
     public function store(Request $request)
 {
     // Validate your incoming request...
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'prep_time' => 'required|integer',
+        'opis' => 'nullable|string',
+        'slika' => 'nullable|image|max:2048',
+        'ingredients' => 'required|array',
+        'ingredients.*.id' => 'required|integer|exists:ingredients,id',
+        'ingredients.*.quantity' => 'required|integer|min:1',
+    ]);
 
+    // Create new recipe
     $recipe = new Recipe();
     $recipe->name = $request->name;
     $recipe->description = $request->description;
@@ -44,9 +55,17 @@ class RecipeController extends Controller
         $recipe->slika = $path; // Save path relative to storage
     }
 
-    $recipe->save();
+    $recipe->save(); // Save recipe first to get its ID
 
-    // Return the full URL for the image
+    // Handle ingredients (many-to-many relationship)
+    $ingredients = $request->input('ingredients'); // Expecting ingredients as an array
+
+    foreach ($ingredients as $ingredient) {
+        // Attach ingredients with their quantity to the recipe
+        $recipe->ingredients()->attach($ingredient['id'], ['quantity' => $ingredient['quantity']]);
+    }
+
+    // Return response with the full URL for the image
     return response()->json([
         'message' => 'Recipe created successfully.',
         'recipe' => [
@@ -55,7 +74,7 @@ class RecipeController extends Controller
             'description' => $recipe->description,
             'prep_time' => $recipe->prep_time,
             'opis' => $recipe->opis,
-            'slika' => url('storage/' . $recipe->slika), // Full URL
+            'slika' => $recipe->slika ? url('storage/' . $recipe->slika) : null, // Full URL or null
         ],
     ]);
 }

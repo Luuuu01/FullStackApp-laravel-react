@@ -12,16 +12,6 @@
     border-color:#FFA500;
   }
   
-  .card {
-    
-    border-width: 1px;
-    border-color: rgb(0, 0, 0);
-    border-radius: 10px;
-    width: 302px;
-    box-sizing: border-box;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.23);
-    
-  }
   
   .filter{
       display: grid;
@@ -35,12 +25,7 @@
     flex-direction: column;
   }
   
-  .FiltriranaJela{
-      overflow: auto;
-      display: flex;
-      flex-wrap: wrap;
-      
-  }
+  
   
   .checkbox-icon {
     display: flex;
@@ -55,18 +40,6 @@
   }
 
   
-
-  .card {
-    display: flex;
-    flex-direction: column; /* Svi elementi unutar kartice će biti poredani vertikalno */
-    justify-content: space-between;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    margin-bottom: 5px;
-  }
 
   .sastojci {
     display: flex;
@@ -84,6 +57,15 @@
     margin: 4px 0; /* Razmak između stavki */
   }
 
+  .left-column {
+    width: 15%; /* 15% width for the left column */
+    background-color: #f8f8f8; /* Light background */
+    padding: 20px; /* Padding inside the column */
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+    display: flex; /* Flexbox to align items inside if needed */
+    flex-direction: column; /* Stack items vertically */
+    gap: 10px; /* Space between filter elements */
+}
 
   .sort-options {
     display: flex;
@@ -131,5 +113,32 @@
   .sort-options select:active {
     background-color: #f0f0f0;
   }
+
+
+  .right-column {
+    width: 85%; /* Remaining width for the recipe list */
+    padding: 20px;
+    box-sizing: border-box;
+
+    display: flex; /* Use flexbox */
+    flex-wrap: wrap; /* Allow items to wrap onto the next line */
+    gap: 20px; /* Space between recipe cards */
+    justify-content: flex-start; /* Align items to the start */
+}
+
+.right-column .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: calc(22% - 20px);  /* 4 items per row */
+    height: 470px; /* Fixed height for uniformity */
+    box-sizing: border-box; /* Include padding in dimensions */
+    margin-bottom: 20px; /* Space between rows */
+}
+
   
   

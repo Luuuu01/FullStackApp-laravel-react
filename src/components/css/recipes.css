@@ -1,0 +1,84 @@
+/* Ensure the container is using flexbox for layout */
+.container {
+    display: flex; /* Use flexbox for layout */
+    width: 100%; /* Full width of the viewport */
+    min-height: 100vh; /* Full viewport height */
+}
+
+/* Left column for filters and sorting */
+.left-column {
+    width: 15%; /* 15% width for the left column */
+    background-color: #f8f8f8; /* Light background */
+    padding: 20px; /* Padding inside the column */
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+    display: flex; /* Flexbox to align items inside if needed */
+    flex-direction: column; /* Stack items vertically */
+    gap: 10px; /* Space between filter elements */
+}
+
+
+.right-column {
+    width: 85%; /* Remaining width for the recipe list */
+    padding: 20px;
+    box-sizing: border-box;
+
+    display: flex; /* Use flexbox */
+    flex-wrap: wrap; /* Allow items to wrap onto the next line */
+    gap: 20px; /* Space between recipe cards */
+    justify-content: flex-start; /* Align items to the start */
+}
+
+.right-column .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: calc(22% - 20px);  /* 4 items per row */
+    height: 470px; /* Fixed height for uniformity */
+    box-sizing: border-box; /* Include padding in dimensions */
+    margin-bottom: 20px; /* Space between rows */
+}
+
+
+
+/* Ensure 4 items per row */
+
+
+/* For screens between 768px and 1200px, display 2 items per row */
+@media (max-width: 1200px) {
+    .right-column > * {
+        flex: 1 1 calc(50% - 20px); /* 2 items per row */
+    }
+}
+
+/* For mobile screens, display 1 item per row */
+@media (max-width: 768px) {
+    .right-column > * {
+        flex: 1 1 100%; /* Full width for mobile */
+    }
+}
+
+/* Remove any fixed width on the card */
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Allow the card to take full width assigned by flexbox */
+    max-width: 100%; /* Ensure card never exceeds its container */
+}
+
+
+/* Individual recipe card */
+/* For screens larger than 1200px, 4 items per row */
+.all-products > * {
+    flex: 1 1 calc(25% - 20px);
+}
+
+

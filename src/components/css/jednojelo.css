@@ -16,12 +16,6 @@
   }
   
 
-  .card-img-top {
-    width: 300px; /* širina slike */
-    height: 250px; /* visina slike */
-    border-radius: 10px;
-    margin-bottom: 0; 
-  }
   
   .card-title{
     margin-top: 0px;
@@ -40,15 +34,26 @@
   
   .card {
     display: flex;
-    flex-direction: column; /* Svi elementi unutar kartice će biti poredani vertikalno */
+    flex-direction: column;
     justify-content: space-between;
     border: 1px solid #ccc;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    margin-bottom: 5px;
-  }
+    width: 500px; /* 4 items per row minus gap */
+    height: 600px; /* Set a fixed height for uniformity */
+    box-sizing: border-box; /* Include padding in dimensions */
+    margin-bottom: 20px; /* Space between rows */
+}
+
+/* Ensuring images fit within the card */
+.card-img-top {
+    width: 100%; /* Full width */
+    height: 200px; /* Fixed height */
+    object-fit: cover; /* Maintain aspect ratio */
+}
+
+
 
   .buttonRecipe {
     
@@ -64,6 +69,7 @@
   .card-body {
     display: flex;
     flex-direction: column;
-    padding: 5px; /* Možda ćeš želeti da ovo prilagodiš */
-    flex-grow: 1;
-  }
+    padding: 10px; /* Add padding for spacing */
+    flex-grow: 1; /* Allow this to take available space */
+    overflow: hidden; /* Prevent overflow */
+}
