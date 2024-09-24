@@ -3,24 +3,25 @@ import "./css/jednojelo.css";
 import { useNavigate } from 'react-router-dom';
 import AddToCartButton from "./addToCart";
 
-const JednoJelo = ({jelo}) => {
+const JednoJelo = ({recipe}) => {
   const navigate = useNavigate();
+  const baseURL = 'http://localhost:8000/';
 
   const handleClick = () => {
-    navigate(`/recipe/${jelo.id}`); // Navigacija ka stranici za recept
+    navigate(`/recipe/${recipe.id}`); // Navigacija ka stranici za recept
   };
 
   return (
     <div className="card" style={{ margin: 25, borderStyle: "solid" }}>
       <a>
-      <img className="card-img-top" src={jelo.slika} alt={jelo.name} /> 
+      <img className="card-img-top" src={`${baseURL}storage/${recipe.slika}`} alt={recipe.name} /> 
       </a>
       <div className="card-body">
-        <h3 className="card-title">{jelo.name}</h3>
+        <h3 className="card-title">{recipe.name}</h3>
         <div className="card-text">
-        <span className="prep-time">Prep time: {jelo.prep_time} min</span>
+        <span className="prep-time">Prep time: {recipe.prep_time} min</span>
         <ul className="sastojci">
-            {jelo.ingredients.map((sastojak) => (
+            {recipe.ingredients.map((sastojak) => (
               <li key={sastojak.id}>{sastojak.name}</li>
             ))}
               
@@ -28,7 +29,7 @@ const JednoJelo = ({jelo}) => {
           
         </div>
       </div>
-      <AddToCartButton recipeId={jelo.id} />
+      <AddToCartButton recipeId={recipe.id} />
       <button className="buttonRecipe" onClick={handleClick}>Pogledaj recept</button>
     </div>
   );

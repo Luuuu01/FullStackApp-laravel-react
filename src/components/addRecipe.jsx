@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useDropzone } from 'react-dropzone';
 import styles from './css/AddRecipe.module.css';
 
 const AddRecipe = () => {
+  const baseURL = 'http://localhost:8000/';
+
   const [recipe, setRecipe] = useState({
     name: '',
     description: '',
     prep_time: '',
-    slika: '',
+    slika: null,
     opis: '',
-    ingredients: [], // Holds objects with ingredient ID and quantity
+    ingredients: [],
   });
 
   const [availableIngredients, setAvailableIngredients] = useState([]);
   const [selectedIngredientId, setSelectedIngredientId] = useState('');
   const [ingredientQuantity, setIngredientQuantity] = useState('');
+  const [uploadedImage, setUploadedImage] = useState(''); // State to hold the uploaded image URL
 
   useEffect(() => {
     const fetchIngredients = async () => {
@@ -22,7 +26,6 @@ const AddRecipe = () => {
         const response = await axios.get('api/ingredients');
         if (response.data && Array.isArray(response.data.data)) {
           setAvailableIngredients(response.data.data);
-          console.log('Fetched Ingredients:', response.data.data); // Log fetched ingredients
         } else {
           console.error('Expected an array of ingredients but received:', response.data);
         }
@@ -44,9 +47,6 @@ const AddRecipe = () => {
 
   const addIngredient = () => {
     if (selectedIngredientId && ingredientQuantity) {
-      console.log('Adding Ingredient:', selectedIngredientId, 'Quantity:', ingredientQuantity); // Log selected ingredient and quantity
-
-      // Add the selected ingredient with its quantity to the recipe
       setRecipe((prevRecipe) => ({
         ...prevRecipe,
         ingredients: [
@@ -55,7 +55,6 @@ const AddRecipe = () => {
         ],
       }));
 
-      // Reset the selected ingredient and quantity input
       setSelectedIngredientId('');
       setIngredientQuantity('');
     }
@@ -71,18 +70,48 @@ const AddRecipe = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitting Recipe:', recipe); // Log the recipe before submission
+    const formData = new FormData();
+
+    formData.append('name', recipe.name);
+    formData.append('description', recipe.description);
+    formData.append('prep_time', recipe.prep_time);
+    formData.append('opis', recipe.opis);
+    formData.append('slika', recipe.slika);
+    formData.append('ingredients', JSON.stringify(recipe.ingredients));
+
     try {
-      const response = await axios.post('api/recipes', recipe, {
-        headers: {
-          Authorization: `Bearer ${window.sessionStorage.getItem('auth_token')}`,
-        },
-      });
-      console.log('Recipe created:', response.data);
+        const response = await axios.post('api/recipes', formData, {
+            headers: {
+                Authorization: `Bearer ${window.sessionStorage.getItem('auth_token')}`,
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        
+        console.log('Recipe created:', response.data);
+
+        // Update to set the full URL for the uploaded image
+        const imagePath = response.data.recipe.slika; // Assuming this returns the relative path
+        setUploadedImage(`${imagePath}`); // Combine to form full URL
+        console.log('Uploaded Image URL:', `http://localhost:8000/storage/${imagePath}`); // Debugging line
     } catch (error) {
-      console.error('Error creating recipe:', error.response?.data || error.message);
+        console.error('Error creating recipe:', error.response?.data || error.message);
     }
-  };
+};
+
+
+  // Dropzone functionality
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: 'image/*',
+    multiple: false,
+    onDrop: (acceptedFiles) => {
+      setRecipe((prevRecipe) => ({
+        ...prevRecipe,
+        slika: acceptedFiles[0],
+      }));
+      const previewUrl = URL.createObjectURL(acceptedFiles[0]);
+      setUploadedImage(previewUrl);
+    },
+  });
 
   return (
     <div className={styles.addRecipeContainer}>
@@ -113,14 +142,6 @@ const AddRecipe = () => {
           placeholder="Preparation Time (minutes)"
           className={styles.inputField}
         />
-        <input
-          type="text"
-          name="slika"
-          value={recipe.slika}
-          onChange={handleChange}
-          placeholder="Image URL"
-          className={styles.inputField}
-        />
         <textarea
           name="opis"
           value={recipe.opis}
@@ -128,6 +149,25 @@ const AddRecipe = () => {
           placeholder="Additional Description (optional)"
           className={styles.textareaField}
         />
+
+        {/* Dropzone for Image Upload */}
+        <div {...getRootProps({ className: styles.dropzone })}>
+          <input {...getInputProps()} />
+          {recipe.slika ? (
+            <p>{recipe.slika.name}</p>
+          ) : (
+            <p>Drag & drop an image here, or click to select one</p>
+          )}
+        </div>
+        {/* Display Uploaded Image */}
+        {uploadedImage && (
+    <div className={styles.imagePreview}>
+        <h4>Uploaded Image:</h4>
+        <img src={uploadedImage} alt="Recipe" className={styles.image} />
+    </div>
+)}
+
+
 
         <h3>Ingredients</h3>
         <select
@@ -152,19 +192,16 @@ const AddRecipe = () => {
         <button type="button" onClick={addIngredient} className={styles.addIngredientButton}>Add Ingredient</button>
 
         <div className={styles.ingredientsList}>
-  {recipe.ingredients.map((ingredient, index) => {
-    const ingredientName = availableIngredients.find(ing => ing.id === Number(ingredient.id))?.name; // Convert to number
-    console.log(`Ingredient ID: ${ingredient.id}, Ingredient Name: ${ingredientName}`);
-
-    return (
-      <div key={index} className={styles.ingredientRow}>
-        <span>{ingredientName ? `${ingredientName} - ${ingredient.quantity}` : 'Unknown Ingredient'}</span>
-        <button type="button" onClick={() => removeIngredient(index)} className={styles.removeButton}>Remove</button>
-      </div>
-    );
-  })}
-</div>
-
+          {recipe.ingredients.map((ingredient, index) => {
+            const ingredientName = availableIngredients.find(ing => ing.id === Number(ingredient.id))?.name;
+            return (
+              <div key={index} className={styles.ingredientRow}>
+                <span>{ingredientName ? `${ingredientName} - ${ingredient.quantity}` : 'Unknown Ingredient'}</span>
+                <button type="button" onClick={() => removeIngredient(index)} className={styles.removeButton}>Remove</button>
+              </div>
+            );
+          })}
+        </div>
 
         <button type="submit" className={styles.submitButton}>Submit Recipe</button>
       </form>

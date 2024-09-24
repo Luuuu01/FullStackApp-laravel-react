@@ -29,18 +29,40 @@ class RecipeController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'prep_time' => 'nullable|integer', // Prep_time može biti null, pošto je nullable
-            'slika' => 'nullable|string', // Slika je nullable i string
-            'opis' => 'nullable|string',  // Opis je nullable
-        ]);
+{
+    // Validate your incoming request...
 
-        $recipe = Recipe::create($validatedData);
-        return new RecipeResource($recipe);
+    $recipe = new Recipe();
+    $recipe->name = $request->name;
+    $recipe->description = $request->description;
+    $recipe->prep_time = $request->prep_time;
+    $recipe->opis = $request->opis;
+
+    // Handle image upload
+    if ($request->hasFile('slika')) {
+        $path = $request->file('slika')->store('images', 'public'); // Store image in public disk
+        $recipe->slika = $path; // Save path relative to storage
     }
+
+    $recipe->save();
+
+    // Return the full URL for the image
+    return response()->json([
+        'message' => 'Recipe created successfully.',
+        'recipe' => [
+            'id' => $recipe->id,
+            'name' => $recipe->name,
+            'description' => $recipe->description,
+            'prep_time' => $recipe->prep_time,
+            'opis' => $recipe->opis,
+            'slika' => url('storage/' . $recipe->slika), // Full URL
+        ],
+    ]);
+}
+
+
+
+
 
     public function show(Recipe $recipe)
     {
