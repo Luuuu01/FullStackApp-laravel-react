@@ -70,21 +70,17 @@ const AddRecipe = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Recipe before submission:", recipe); 
     const formData = new FormData();
-
     formData.append('name', recipe.name);
     formData.append('description', recipe.description);
     formData.append('prep_time', recipe.prep_time);
     formData.append('opis', recipe.opis);
     formData.append('slika', recipe.slika);
-
-    // Append ingredients individually
+    
     recipe.ingredients.forEach((ingredient, index) => {
         formData.append(`ingredients[${index}][id]`, ingredient.id);
         formData.append(`ingredients[${index}][quantity]`, ingredient.quantity);
     });
-
     try {
         const response = await axios.post('api/recipes', formData, {
             headers: {
@@ -101,7 +97,6 @@ const AddRecipe = () => {
     }
 };
 
-  // Dropzone functionality
   const { getRootProps, getInputProps } = useDropzone({
     accept: 'image/*',
     multiple: false,

@@ -10,23 +10,15 @@ use App\Models\Recipe;
 class RecipeController extends Controller
 {
     public function index(Request $request)
-    {
-        // $query = Recipe::query();
+{
+    $perPage = 12; // Broj recepata po stranici
 
-        // if ($request->has('category')) {
-        //     $query->where('category_id', $request->category);
-        // }
+    // Upit sa paginacijom
+    $recipes = Recipe::paginate($perPage);
 
-        // if ($request->has('ingredient')) {
-        //     $query->whereHas('ingredients', function ($q) use ($request) {
-        //         $q->where('ingredient_id', $request->ingredient);
-        //     });
-        // }
+    return RecipeResource::collection($recipes);
+}
 
-        // $recipes = $query->paginate(10);
-        $recipes=Recipe::all();
-        return RecipeResource::collection($recipes);
-    }
 
     public function store(Request $request)
 {

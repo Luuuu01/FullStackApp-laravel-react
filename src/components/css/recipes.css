@@ -5,7 +5,6 @@
     min-height: 100vh; /* Full viewport height */
 }
 
-/* Left column for filters and sorting */
 .left-column {
     width: 15%; /* 15% width for the left column */
     background-color: #f8f8f8; /* Light background */
@@ -17,16 +16,8 @@
 }
 
 
-.right-column {
-    width: 85%; /* Remaining width for the recipe list */
-    padding: 20px;
-    box-sizing: border-box;
 
-    display: flex; /* Use flexbox */
-    flex-wrap: wrap; /* Allow items to wrap onto the next line */
-    gap: 20px; /* Space between recipe cards */
-    justify-content: flex-start; /* Align items to the start */
-}
+
 
 .right-column .card {
     display: flex;
@@ -41,11 +32,6 @@
     box-sizing: border-box; /* Include padding in dimensions */
     margin-bottom: 20px; /* Space between rows */
 }
-
-
-
-/* Ensure 4 items per row */
-
 
 /* For screens between 768px and 1200px, display 2 items per row */
 @media (max-width: 1200px) {
@@ -74,11 +60,58 @@
     max-width: 100%; /* Ensure card never exceeds its container */
 }
 
-
-/* Individual recipe card */
-/* For screens larger than 1200px, 4 items per row */
 .all-products > * {
     flex: 1 1 calc(25% - 20px);
 }
 
+.pagination button {
+    margin-top: 0px;
+    margin-left:5px;
+    margin-right:5px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: none;
+    background-color: #FFA500;
+    cursor: pointer;
+    width:50px;
+    transition: all 0.3s ease;
+}
 
+.pagination button.active-page {
+    background-color: #815e1c;
+    color: white;
+}
+
+.pagination button:hover {
+    filter: brightness(1.2);
+}
+
+.pagination {
+    display: flex;
+    position: absolute;
+    top:0px;
+    
+    transform: translateX(200%); /* Use flexbox for pagination */
+    justify-content: center; /* Center the buttons horizontally */
+     /* Space above the pagination */
+    margin-bottom: 20px; /* Space at the bottom of pagination */
+}
+
+.recipe-list {
+    display: flex;
+    position:relative; /* Use flexbox for the recipes */
+    flex-wrap: wrap; /* Allow items to wrap onto the next line */
+    gap: 20px; /* Space between recipe cards */
+    flex-grow: 1; /* Allow recipe list to take available space */
+}
+
+.right-column .recipe-list{
+    width: 85%; /* Remaining width for the recipe list */
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex; /* Use flexbox */
+    flex-wrap: wrap; /* Allow items to wrap onto the next line */
+    gap: 20px; /* Space between recipe cards */
+    justify-content: flex-start; /* Align items to the start */
+    height: calc(100vh - 40px); 
+}

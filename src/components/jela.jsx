@@ -10,6 +10,8 @@ const Jela = () => {
     const [error, setError] = useState(null);
     const [sortOrder, setSortOrder] = useState(''); // For sorting
     const [filter, setFilter] = useState(''); // For filtering by ingredient
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
     const [prepTimeRange, setPrepTimeRange] = useState([0, 120]); // Range slider for prep time
 
     const STEP = 5; // Step for the slider
@@ -18,16 +20,82 @@ const Jela = () => {
 
     // Fetch recipes from API
     useEffect(() => {
-        axios.get("/api/recipes")
+        axios.get(`/api/recipes?page=${currentPage}`)
             .then((res) => {
                 setRecipes(res.data.data);
                 setFilteredRecipes(res.data.data);
+                setTotalPages(res.data.meta.last_page); // Total number of pages
             })
             .catch((err) => {
                 console.error("Error fetching recipes:", err);
                 setError("There was an issue loading recipes.");
             });
-    }, []);
+    }, [currentPage]);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const renderPageNumbers = () => {
+        const pageNumbers = [];
+    
+        // Only add pagination if there's more than one page
+        if (totalPages > 1) {
+            // Always add the first page button
+            pageNumbers.push(
+                <button
+                    key={1}
+                    onClick={() => handlePageChange(1)}
+                    className={1 === currentPage ? "active-page" : ""}
+                >
+                    1
+                </button>
+            );
+    
+            // Add dots for previous pages if needed
+            if (currentPage > 2) {
+                pageNumbers.push(<span key="dots-start">...</span>);
+            }
+    
+            // Add buttons for current and surrounding pages
+            const startPage = Math.max(2, currentPage - 1);
+            const endPage = Math.min(totalPages - 1, currentPage + 1);
+    
+            for (let i = startPage; i <= endPage; i++) {
+                pageNumbers.push(
+                    <button
+                        key={i}
+                        onClick={() => handlePageChange(i)}
+                        className={i === currentPage ? "active-page" : ""}
+                    >
+                        {i}
+                    </button>
+                );
+            }
+    
+            // Add dots for next pages if needed
+            if (currentPage < totalPages - 1) {
+                pageNumbers.push(<span key="dots-end">...</span>);
+            }
+    
+            // Always add the last page button
+            if (totalPages > 1) {
+                pageNumbers.push(
+                    <button
+                        key={totalPages}
+                        onClick={() => handlePageChange(totalPages)}
+                        className={totalPages === currentPage ? "active-page" : ""}
+                    >
+                        {totalPages}
+                    </button>
+                );
+            }
+        }
+    
+        return pageNumbers;
+    };
+    
+    
 
     // Handle sorting when sortOrder changes
     useEffect(() => {
@@ -141,14 +209,22 @@ const Jela = () => {
             </div>
 
             <div className="right-column">
-                {filteredRecipes === null ? (
-                    <h1>Loading recipes...</h1>
-                ) : (
-                    filteredRecipes.map((recipe) => (
-                        <JednoJelo key={recipe.id} recipe={recipe} />
-                    ))
-                )}
-            </div>
+    <div className="recipe-list">
+        {filteredRecipes === null ? (
+            <h1>Loading recipes...</h1>
+        ) : (
+            filteredRecipes.map((recipe) => (
+                <JednoJelo key={recipe.id} recipe={recipe} />
+            ))
+        )}
+        <div className="pagination">
+            {renderPageNumbers()}
+        </div>
+    </div>
+</div>
+
+
+
         </div>
     );
 };
