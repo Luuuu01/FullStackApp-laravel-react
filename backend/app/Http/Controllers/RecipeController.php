@@ -11,14 +11,9 @@ class RecipeController extends Controller
 {
     public function index(Request $request)
 {
-    $perPage = 12; // Broj recepata po stranici
-
-    // Upit sa paginacijom
-    $recipes = Recipe::paginate($perPage);
-
+    $recipes = Recipe::paginate(3);
     return RecipeResource::collection($recipes);
 }
-
 
     public function store(Request $request)
 {
@@ -34,7 +29,6 @@ class RecipeController extends Controller
         'ingredients.*.quantity' => 'required|integer|min:1',
     ]);
 
-    // Create new recipe
     $recipe = new Recipe();
     $recipe->name = $request->name;
     $recipe->description = $request->description;

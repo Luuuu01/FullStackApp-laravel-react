@@ -39,9 +39,20 @@ const Jela = () => {
     const renderPageNumbers = () => {
         const pageNumbers = [];
     
-        // Only add pagination if there's more than one page
+        // Always render previous button
+        pageNumbers.push(
+            <button
+                key="prev"
+                onClick={() => handlePageChange(currentPage - 1)}
+                className="pagination-arrow"
+                disabled={currentPage === 1} // Disable when on first page
+            >
+                &lt;
+            </button>
+        );
+    
         if (totalPages > 1) {
-            // Always add the first page button
+            // Always render first page button
             pageNumbers.push(
                 <button
                     key={1}
@@ -52,12 +63,12 @@ const Jela = () => {
                 </button>
             );
     
-            // Add dots for previous pages if needed
-            if (currentPage > 2) {
+            // No ellipsis between 1 and 2 if currentPage is less than or equal to 3
+            if (currentPage > 3) {
                 pageNumbers.push(<span key="dots-start">...</span>);
             }
     
-            // Add buttons for current and surrounding pages
+            // Render buttons for currentPage - 1, currentPage, and currentPage + 1
             const startPage = Math.max(2, currentPage - 1);
             const endPage = Math.min(totalPages - 1, currentPage + 1);
     
@@ -73,27 +84,39 @@ const Jela = () => {
                 );
             }
     
-            // Add dots for next pages if needed
-            if (currentPage < totalPages - 1) {
+            // No ellipsis between second-to-last and last page
+            if (currentPage < totalPages - 2) {
                 pageNumbers.push(<span key="dots-end">...</span>);
             }
     
-            // Always add the last page button
-            if (totalPages > 1) {
-                pageNumbers.push(
-                    <button
-                        key={totalPages}
-                        onClick={() => handlePageChange(totalPages)}
-                        className={totalPages === currentPage ? "active-page" : ""}
-                    >
-                        {totalPages}
-                    </button>
-                );
-            }
+            // Always render last page button
+            pageNumbers.push(
+                <button
+                    key={totalPages}
+                    onClick={() => handlePageChange(totalPages)}
+                    className={totalPages === currentPage ? "active-page" : ""}
+                >
+                    {totalPages}
+                </button>
+            );
         }
+    
+        // Always render next button
+        pageNumbers.push(
+            <button
+                key="next"
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="pagination-arrow"
+                disabled={currentPage === totalPages} // Disable when on last page
+            >
+                &gt;
+            </button>
+        );
     
         return pageNumbers;
     };
+    
+    
     
     
 
@@ -165,47 +188,53 @@ const Jela = () => {
                 {/* Single Slider with Two Values for Prep Time */}
                 <div>
                     <label>Prep Time Range: {prepTimeRange[0]} - {prepTimeRange[1]} min</label>
-                <Range
-                    step={STEP}
-                    min={MIN}
-                    max={MAX}
-                    values={prepTimeRange}
-                    onChange={(values) => setPrepTimeRange(values)}
-                    renderTrack={({ props, children }) => (
+                    <Range
+                        step={STEP}
+                        min={MIN}
+                        max={MAX}
+                        values={prepTimeRange}
+                        onChange={(values) => setPrepTimeRange(values)}
+                        renderTrack={({ props, children, isDragged }) => (
                         <div
                             {...props}
                             style={{
-                                height: '6px',
-                                width: '100%',
-                                background: '#ddd',
-                                margin: '15px 0',
-                                position: 'relative',
+                            height: '6px',
+                            width: '100%',
+                            background: 'linear-gradient(to right, #ddd ' + 
+                                ((prepTimeRange[0] - MIN) / (MAX - MIN)) * 100 + '%, #FFA500 ' + 
+                                ((prepTimeRange[0] - MIN) / (MAX - MIN)) * 100 + '%, #FFA500 ' + 
+                                ((prepTimeRange[1] - MIN) / (MAX - MIN)) * 100 + '%, #ddd ' + 
+                                ((prepTimeRange[1] - MIN) / (MAX - MIN)) * 100 + '%)',
+                            margin: '15px 0',
+                            position: 'relative',
+                            borderRadius: '5px', // Rounded corners for the track
                             }}
                         >
                             {children}
                         </div>
-                    )}
-                    renderThumb={({ props, index }) => (
+                        )}
+                        renderThumb={({ props, index }) => (
                         <div
                             {...props}
                             style={{
-                                height: '20px',
-                                width: '20px',
-                                borderRadius: '50%',
-                                backgroundColor: '#999',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                boxShadow: '0px 2px 6px #AAA',
-                                position: 'relative',  
-                                top: index === 0 ? '0px' : '-20px',  // Different top values for left (index 0) and right (index 1)
+                            height: '20px',
+                            width: '20px',
+                            borderRadius: '50%',
+                            backgroundColor: 'white',
+                            border: '2px solid black', // Thumb color
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            boxShadow: '0px 2px 6px #AAA',
+                            position: 'relative',
+                            top: index === 0 ? '0px' : '-24px',  // Custom top values based on the thumb index
                             }}
                         />
-                    )}
-                />
+                        )}
+                    />
+                    </div>
 
 
-                </div>
             </div>
 
             <div className="right-column">
