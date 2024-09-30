@@ -16,15 +16,13 @@ function NavBar({token}) {
 
   function handleLogout(e)
   {
-    
-
-let config = {
-  method: 'post',
-  maxBodyLength: Infinity,
-  url: '/api/logout',
-  headers: { 
-    'Authorization': 'Bearer '+ window.sessionStorage.getItem("auth_token"),
-  },
+      let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: '/api/logout',
+        headers: { 
+          'Authorization': 'Bearer '+ window.sessionStorage.getItem("auth_token"),
+        },
 };
 
 axios.request(config)
@@ -40,50 +38,25 @@ axios.request(config)
   return (
     <div>
     <div className="navBar">
-      <Link
-        to="/filter"
-        className={`titl ${location.pathname === "/" ? "active" : ""}`}
-      >
+      <Link to="/filter" className={`titl ${location.pathname === "/" ? "active" : ""}`}>
         <LuChefHat className="ikonica" /> Receptorijum
       </Link>
-      <Link
-        to="/recipes"
-        className={`SvaJela ${
-          location.pathname === "/svajela" ? "active" : ""
-        }`}
-      >
+      <Link to="/recipes" className={`SvaJela ${location.pathname === "/svajela" ? "active" : ""}`}>
         Sva Jela
-      </Link>
-      
+      </Link>   
       {
       !token ?
-      <Link
-        to="/login"
-              className={`Login ${
-                  location.pathname === "/login" ? "active" : ""}`}
-      >
+      <Link to="/login" className={`Login ${location.pathname === "/login" ? "active" : ""}`}>
         Login 
         </Link>
         :
-        <Link
-        to="/login"
-        onClick={handleLogout}
-              className={`Logout ${
-                  location.pathname === "/logout" ? "active" : ""}`}
-      >
+        <Link to="/login" onClick={handleLogout} className={`Logout ${location.pathname === "/logout" ? "active" : ""}`}> 
         Logout
-      
       </Link>
-       }
-      
-      <Link
-        to="/cart"
-              className={`Cart ${
-                  location.pathname === "/cart" ? "active" : ""}`}
-      >
+       } 
+      <Link to="/cart" className={`Cart ${location.pathname === "/cart" ? "active" : ""}`}>
         <IoCartOutline className="cart-icon"/> Cart
         </Link>
-      
     </div>
     <Outlet/>
     </div>

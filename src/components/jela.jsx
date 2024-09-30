@@ -13,11 +13,9 @@ const Jela = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [prepTimeRange, setPrepTimeRange] = useState([0, 120]); // Range slider for prep time
-
     const STEP = 5; // Step for the slider
     const MIN = 0; // Min prep time
     const MAX = 120; // Max prep time
-
     // Fetch recipes from API
     useEffect(() => {
         axios.get(`/api/recipes?page=${currentPage}`)
@@ -35,7 +33,6 @@ const Jela = () => {
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
-
     const renderPageNumbers = () => {
         const pageNumbers = [];
     
@@ -49,8 +46,7 @@ const Jela = () => {
             >
                 &lt;
             </button>
-        );
-    
+        );  
         if (totalPages > 1) {
             // Always render first page button
             pageNumbers.push(
@@ -66,8 +62,7 @@ const Jela = () => {
             // No ellipsis between 1 and 2 if currentPage is less than or equal to 3
             if (currentPage > 3) {
                 pageNumbers.push(<span key="dots-start">...</span>);
-            }
-    
+            }   
             // Render buttons for currentPage - 1, currentPage, and currentPage + 1
             const startPage = Math.max(2, currentPage - 1);
             const endPage = Math.min(totalPages - 1, currentPage + 1);
@@ -83,7 +78,6 @@ const Jela = () => {
                     </button>
                 );
             }
-    
             // No ellipsis between second-to-last and last page
             if (currentPage < totalPages - 2) {
                 pageNumbers.push(<span key="dots-end">...</span>);
@@ -100,7 +94,6 @@ const Jela = () => {
                 </button>
             );
         }
-    
         // Always render next button
         pageNumbers.push(
             <button
@@ -115,11 +108,6 @@ const Jela = () => {
     
         return pageNumbers;
     };
-    
-    
-    
-    
-
     // Handle sorting when sortOrder changes
     useEffect(() => {
         if (recipes && sortOrder) {
@@ -173,7 +161,6 @@ const Jela = () => {
                     />
                 </div>
                 
-                {/* Sort by */}
                 <div>
                     <label>Sort by: </label>
                     <select onChange={(e) => setSortOrder(e.target.value)}>
@@ -233,10 +220,7 @@ const Jela = () => {
                         )}
                     />
                     </div>
-
-
             </div>
-
             <div className="right-column">
     <div className="recipe-list">
         {filteredRecipes === null ? (
@@ -251,9 +235,6 @@ const Jela = () => {
         </div>
     </div>
 </div>
-
-
-
         </div>
     );
 };

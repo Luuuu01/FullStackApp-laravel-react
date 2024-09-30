@@ -13,16 +13,11 @@
   }
 }
 
-
- 
-
-
 .all-products {
   display: flex;
   flex-wrap: wrap;
   margin-left: 100px;
 }
-
 
 .App-header {
   background-color: #282c34;

@@ -34,27 +34,15 @@ const Register = () => {
     })
   };
 
-
   return (
     <div className="register-form-container">
       <form className="register-form" onSubmit={handleSubmit}>
         <h2>Register</h2>
-        {/* <label>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={handleUsernameChange}
-            placeholder="Enter your username"
-          />
-        </label> */}
         <label>
           Name:
           <div style={{ position: "relative" }}>
             <input
               type="text"
-              
-             
               name="name"
               onInput={handleInput}
               placeholder="Enter your username"
@@ -78,7 +66,6 @@ const Register = () => {
           <div style={{ position: "relative" }}>
             <input
               type="email"
-              
               name="email"
               onInput={handleInput}
               placeholder="Enter your email"
@@ -97,14 +84,11 @@ const Register = () => {
           </div>
         </label>
         <br />
-        
         <label>
           Password:
           <div style={{ position: "relative" }}>
             <input
               type="password"
-              
-              
               name="password"
               onInput={handleInput}
               placeholder="Enter your password"

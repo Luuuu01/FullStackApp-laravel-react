@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // import styles
 import styles from './css/AddRecipe.module.css';
 
 const AddRecipe = () => {
-  const baseURL = 'http://localhost:8000/';
+  const [opis, setOpis] = useState('');
 
   const [recipe, setRecipe] = useState({
     name: '',
     description: '',
     prep_time: '',
     slika: null,
-    opis: '',
     ingredients: [],
   });
 
@@ -45,6 +46,10 @@ const AddRecipe = () => {
     }));
   };
 
+  const handleEditorChange = (value) => {
+    setOpis(value);
+  };
+  
   const addIngredient = () => {
     if (selectedIngredientId && ingredientQuantity) {
       setRecipe((prevRecipe) => ({
@@ -74,28 +79,28 @@ const AddRecipe = () => {
     formData.append('name', recipe.name);
     formData.append('description', recipe.description);
     formData.append('prep_time', recipe.prep_time);
-    formData.append('opis', recipe.opis);
+    formData.append('opis', opis); // Add the opis content to formData
     formData.append('slika', recipe.slika);
     
     recipe.ingredients.forEach((ingredient, index) => {
-        formData.append(`ingredients[${index}][id]`, ingredient.id);
-        formData.append(`ingredients[${index}][quantity]`, ingredient.quantity);
+      formData.append(`ingredients[${index}][id]`, ingredient.id);
+      formData.append(`ingredients[${index}][quantity]`, ingredient.quantity);
     });
+    
     try {
-        const response = await axios.post('api/recipes', formData, {
-            headers: {
-                Authorization: `Bearer ${window.sessionStorage.getItem('auth_token')}`,
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-        console.log('Recipe created:', response.data);
-        // Update to set the full URL for the uploaded image
-        const imagePath = response.data.recipe.slika; // Assuming this returns the relative path
-        setUploadedImage(`${imagePath}`); // Combine to form full URL
+      const response = await axios.post('api/recipes', formData, {
+        headers: {
+          Authorization: `Bearer ${window.sessionStorage.getItem('auth_token')}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('Recipe created:', response.data);
+      const imagePath = response.data.recipe.slika; // Assuming this returns the relative path
+      setUploadedImage(`${imagePath}`); // Combine to form full URL
     } catch (error) {
-        console.error('Error creating recipe:', error.response?.data || error.message);
+      console.error('Error creating recipe:', error.response?.data || error.message);
     }
-};
+  };
 
   const { getRootProps, getInputProps } = useDropzone({
     accept: 'image/*',
@@ -139,12 +144,21 @@ const AddRecipe = () => {
           placeholder="Preparation Time (minutes)"
           className={styles.inputField}
         />
-        <textarea
-          name="opis"
-          value={recipe.opis}
-          onChange={handleChange}
-          placeholder="Additional Description (optional)"
-          className={styles.textareaField}
+
+        {/* React Quill Editor for Additional Description */}
+        <ReactQuill
+          value={opis}
+          onChange={handleEditorChange}
+          modules={{
+            toolbar: [
+              [{ 'header': [1, 2, 3, 4, false] }],
+              ['bold', 'italic', 'underline'],
+              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+              [{ 'align': [] }], // Alignment options (left, center, right)
+              ['link', 'image'],
+            ],
+          }}
+          style={{ height: '300px' }}
         />
 
         {/* Dropzone for Image Upload */}
@@ -158,11 +172,11 @@ const AddRecipe = () => {
         </div>
         {/* Display Uploaded Image */}
         {uploadedImage && (
-    <div className={styles.imagePreview}>
-        <h4>Uploaded Image:</h4>
-        <img src={uploadedImage} alt="Recipe" className={styles.image} />
-    </div>
-)}
+          <div className={styles.imagePreview}>
+            <h4>Uploaded Image:</h4>
+            <img src={uploadedImage} alt="Recipe" className={styles.image} />
+          </div>
+        )}
 
         <h3>Ingredients</h3>
         <select
