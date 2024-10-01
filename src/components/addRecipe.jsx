@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // import styles
 import styles from './css/AddRecipe.module.css';
+import CustomHtmlEditor from './customHtmlEditor'
 
 const AddRecipe = () => {
-  const [opis, setOpis] = useState('');
-
   const [recipe, setRecipe] = useState({
     name: '',
     description: '',
     prep_time: '',
     slika: null,
     ingredients: [],
+    opis: '', // Moved opis here to keep everything in the recipe object
   });
-
+  const uploadUrl="api/upload-image";
   const [availableIngredients, setAvailableIngredients] = useState([]);
   const [selectedIngredientId, setSelectedIngredientId] = useState('');
   const [ingredientQuantity, setIngredientQuantity] = useState('');
-  const [uploadedImage, setUploadedImage] = useState(''); // State to hold the uploaded image URL
+  const [uploadedImage, setUploadedImage] = useState('');
 
   useEffect(() => {
     const fetchIngredients = async () => {
@@ -38,6 +36,13 @@ const AddRecipe = () => {
     fetchIngredients();
   }, []);
 
+  const setOpis = (value) => {
+    setRecipe((prevRecipe) => ({
+      ...prevRecipe,
+      opis: value,
+    }));
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setRecipe((prevRecipe) => ({
@@ -46,9 +51,9 @@ const AddRecipe = () => {
     }));
   };
 
-  const handleEditorChange = (value) => {
-    setOpis(value);
-  };
+  const handleEditorChange = (content, editor) =>{
+    setRecipe({...recipe,opis:content});
+  }
   
   const addIngredient = () => {
     if (selectedIngredientId && ingredientQuantity) {
@@ -79,7 +84,7 @@ const AddRecipe = () => {
     formData.append('name', recipe.name);
     formData.append('description', recipe.description);
     formData.append('prep_time', recipe.prep_time);
-    formData.append('opis', opis); // Add the opis content to formData
+    formData.append('opis', recipe.opis); // Use recipe.opis directly
     formData.append('slika', recipe.slika);
     
     recipe.ingredients.forEach((ingredient, index) => {
@@ -95,7 +100,7 @@ const AddRecipe = () => {
         },
       });
       console.log('Recipe created:', response.data);
-      const imagePath = response.data.recipe.slika; // Assuming this returns the relative path
+      const imagePath = response.data.recipe.slika; // Adjust based on your response structure
       setUploadedImage(`${imagePath}`); // Combine to form full URL
     } catch (error) {
       console.error('Error creating recipe:', error.response?.data || error.message);
@@ -144,22 +149,11 @@ const AddRecipe = () => {
           placeholder="Preparation Time (minutes)"
           className={styles.inputField}
         />
+        
 
-        {/* React Quill Editor for Additional Description */}
-        <ReactQuill
-          value={opis}
-          onChange={handleEditorChange}
-          modules={{
-            toolbar: [
-              [{ 'header': [1, 2, 3, 4, false] }],
-              ['bold', 'italic', 'underline'],
-              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-              [{ 'align': [] }], // Alignment options (left, center, right)
-              ['link', 'image'],
-            ],
-          }}
-          style={{ height: '300px' }}
-        />
+        {/* TinyMCE Editor for Additional Description */}
+        <CustomHtmlEditor onChange={setOpis} uploadUrl={uploadUrl}/>
+
 
         {/* Dropzone for Image Upload */}
         <div {...getRootProps({ className: styles.dropzone })}>

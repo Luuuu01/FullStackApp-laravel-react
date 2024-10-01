@@ -7,6 +7,7 @@ use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\IngredientController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ImageUploadController;
 
 
 // Javne rute (bez autentifikacije)
@@ -44,5 +45,8 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/recipes', [RecipeController::class, 'store']); // Samo admin može dodati recept
     Route::get('/admin-dashboard', [AdminController::class, 'index']);
 });
+
+// In your routes/api.php
+Route::post('/upload-image', [ImageUploadController::class, 'uploadImage']);
 
 
