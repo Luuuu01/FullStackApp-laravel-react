@@ -11,7 +11,13 @@ class RecipeController extends Controller
 {
     public function index(Request $request)
     {
-        $recipes = Recipe::paginate(3);
+        $recipes = Recipe::paginate(12);
+        return RecipeResource::collection($recipes);
+    }
+
+    public function allRecipes()
+    {
+        $recipes = Recipe::all();
         return RecipeResource::collection($recipes);
     }
 
@@ -90,4 +96,5 @@ class RecipeController extends Controller
         $recipe->delete();
         return response()->json(['message' => 'Recipe deleted']);
     }
+
 }

@@ -25,24 +25,27 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
       const range = selection.getRangeAt(0);
       const parent = range.startContainer.parentNode;
   
-      // Check if the parent is an image container
-      if (parent.classList.contains('image-container')) {
-        if (align === 'Left') {
-          parent.style.textAlign = 'left';
-        } else if (align === 'Center') {
-          parent.style.textAlign = 'center';
-        } else if (align === 'Right') {
-          parent.style.textAlign = 'right';
-        } else if (align === 'Justify') {
-          parent.style.textAlign = 'justify';
-        }
+      // Handle text alignment
+      if (parent.tagName.toLowerCase() === 'div' || parent.tagName.toLowerCase() === 'p') {
+        parent.style.textAlign = align.toLowerCase(); // Set text alignment directly
       } else {
-        // If not an image container, apply alignment to the paragraph
-        document.execCommand('justify' + align);
+        // Create a new <p> element to apply the alignment
+        const newParagraph = document.createElement('p');
+        newParagraph.style.textAlign = align.toLowerCase();
+        range.surroundContents(newParagraph); // Wrap the selected content in the new paragraph
       }
+  
+      // Handle image alignment
+      const imageContainers = document.querySelectorAll('.image-container');
+      imageContainers.forEach((imgContainer) => {
+        imgContainer.style.textAlign = align.toLowerCase(); // Align the image container
+      });
+  
+      // Trigger change event
       onChange(editorRef.current.innerHTML);
     }
   };
+  
   
 
   const applyFormatting = (tag) => {
@@ -101,25 +104,19 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
   
       // Create a new paragraph element
       const newParagraph = document.createElement('p');
-      newParagraph.appendChild(document.createElement('br')); // Add a line break
+      newParagraph.appendChild(document.createElement('br')); // Add a line break to ensure the new paragraph has space
   
-      // Check if the current node is a text node inside a formatted element
-      if (currentNode.nodeType === Node.TEXT_NODE) {
-        const parentElement = currentNode.parentNode;
+      // Check if the current node is inside a paragraph or other block element
+      let blockParent = currentNode;
+      while (blockParent && !['P', 'DIV'].includes(blockParent.nodeName)) {
+        blockParent = blockParent.parentNode;
+      }
   
-        // If the parent is a formatted element (like <b>, <i>, etc.)
-        if (parentElement.tagName.toLowerCase() !== 'p') {
-          // Move the selection outside of the current formatted element
-          const grandparent = parentElement.parentNode;
-          grandparent.insertBefore(newParagraph, parentElement.nextSibling); // Insert new paragraph after the formatted element
-          selection.removeAllRanges();
-          selection.addRange(range); // Reset the selection to the original range
-        } else {
-          // If it's already in a paragraph, just insert the new paragraph
-          range.insertNode(newParagraph);
-        }
+      if (blockParent && blockParent.nodeName === 'P') {
+        // Insert the new paragraph after the current paragraph
+        blockParent.parentNode.insertBefore(newParagraph, blockParent.nextSibling);
       } else {
-        // If currentNode is not a text node (e.g., it's an element), insert new paragraph directly
+        // If not inside a paragraph, insert the new paragraph directly
         range.insertNode(newParagraph);
       }
   
@@ -129,9 +126,14 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
       selection.removeAllRanges();
       selection.addRange(range);
   
+      // Trigger change event
       onChange(editorRef.current.innerHTML);
     }
   };
+  
+  
+  
+  
 
   const makeImageResizable = (img) => {
     const resizableContainer = document.createElement('div');
@@ -233,14 +235,10 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
               'Content-Type': 'multipart/form-data',
             },
           });
-  
-          console.log('Upload response:', response.data); // Log the response to check
-  
+    
           if (response.data.url) {
             const baseUrl = 'http://localhost:8000'; // Update base URL
             const imageUrl = `${baseUrl}${response.data.url}`;
-  
-            console.log('Image URL:', imageUrl); // Check the constructed URL
   
             // Create the image element
             const img = document.createElement('img');
@@ -252,7 +250,10 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
             // Create a container for the image
             const imgContainer = document.createElement('div');
             imgContainer.classList.add('image-container');
-            imgContainer.appendChild(img);
+  
+            // Call makeImageResizable here
+            const resizableImgContainer = makeImageResizable(img);
+            imgContainer.appendChild(resizableImgContainer);
   
             // Get the current selection
             const selection = window.getSelection();
@@ -272,13 +273,11 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
               // Trigger change event
               onChange(editorRef.current.innerHTML);
             } else {
-              console.error('No selection range found'); // Log if there's no selection
             }
           } else {
             alert('Image upload failed. No URL returned.');
           }
         } catch (error) {
-          console.error('Image upload failed:', error);
           alert('Image upload failed. Please check the console for details.');
         }
       } else {
@@ -288,6 +287,7 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
   
     input.click(); // Open file picker
   };
+  
   
   
   

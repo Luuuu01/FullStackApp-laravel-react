@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Auth;
+// Make sure this line exists in your ForgotPasswordController.php
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
