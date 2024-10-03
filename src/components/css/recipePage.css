@@ -1,71 +1,126 @@
+.recipe-page-layout {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  padding: 20px;
+  max-width: 1200px;
+}
 
-  
-  .recipe-container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-  }
-  
-  .recipe-title {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: #333;
+.recipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.recipe-image-container {
+  flex: 1;
+  max-width: 300px; /* Adjusted the width */
+}
+
+.recipe-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.recipe-info {
+  flex: 2;
+  padding-left: 20px;
+  text-align: left;
+}
+
+.recipe-title {
+  font-size: 2.5em;
+  font-weight: 700;
+  margin: 0;
+}
+
+.recipe-meta {
+  color: #777;
+  font-size: 1em;
+}
+
+.recipe-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.recipe-content {
+  flex: 3;
+}
+
+.table-of-contents {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.recipe-main {
+  flex: 3;
+  margin-right: 20px;
+}
+
+.recipe-sidebar {
+  flex: 1;
+  padding-left: 20px;
+  border-left: 1px solid #ddd;
+}
+
+.ingredients-list,
+.instructions {
+  margin-top: 20px;
+}
+
+.ingredients-list li {
+  margin-bottom: 10px;
+}
+
+.instructions {
+  background: #f9f9f9;
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.recipe-metadata {
+  margin: 20px 0;
+  font-size: 0.9em;
+}
+
+.recipe-metadata hr {
+  border: 1px solid #ddd;
+}
+
+.metadata-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.metadata-row span {
+  flex: 1;
+}
+
+.metadata-row span:last-child {
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .recipe-header {
+    flex-direction: column;
     text-align: center;
   }
-  
-  .recipe-image {
-    width: 100%;       /* Slika će zauzeti punu širinu roditeljskog elementa */
-    height: auto;      /* Visina će se automatski prilagoditi */
-    max-width: 300px;  /* Postavi maksimalnu širinu na 300px */
-    border-radius: 10px;
-    margin: 0 auto;    /* Centriranje slike */
-    display: block;     /* Prikaz kao blok element */
+
+  .recipe-info {
+    padding-left: 0;
   }
-  
-  
-  .recipe-details {
-    display: flex;
+
+  .recipe-container {
     flex-direction: column;
   }
-  
-  .ingredients-title,
-  .instructions-title {
-    font-size: 1.5em;
-    margin: 20px 0 10px;
-    color: #666;
+
+  .recipe-sidebar {
+    border-left: none;
+    margin-top: 40px;
   }
-  
-  .ingredients-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .ingredients-list li {
-    background: #f0f0f0;
-    border-radius: 5px;
-    margin: 5px 0;
-    padding: 10px;
-  }
-  
-  .instructions {
-    background: #f0f0f0;
-    border-radius: 5px;
-    padding: 15px;
-    margin-top: 10px;
-    line-height: 1.5;
-  }
-  
-  /* Loading and Error Styles */
-  .loading,
-  .error,
-  .not-found {
-    text-align: center;
-    font-size: 1.5em;
-    color: #ff4d4d;
-    margin-top: 20px;
-  }
-  
+}
