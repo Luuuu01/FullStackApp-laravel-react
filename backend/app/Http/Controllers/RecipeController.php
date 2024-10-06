@@ -11,7 +11,8 @@ class RecipeController extends Controller
 {
     public function index(Request $request)
     {
-        $recipes = Recipe::paginate(12);
+        $perPage = 12;
+        $recipes = Recipe::paginate($perPage);
         return RecipeResource::collection($recipes);
     }
 
@@ -32,7 +33,8 @@ class RecipeController extends Controller
             'slika' => 'nullable|image|max:2048',
             'ingredients' => 'required|array',
             'ingredients.*.id' => 'required|integer|exists:ingredients,id',
-            'ingredients.*.quantity' => 'required|integer|min:1',
+            'ingredients.*.quantity' => 'required|integer|min:0',
+            'written_by' => 'nullable|string',
         ]);
 
         $recipe = new Recipe();
@@ -40,6 +42,7 @@ class RecipeController extends Controller
         $recipe->description = $request->description;
         $recipe->prep_time = $request->prep_time;
         $recipe->opis = $request->opis;
+        $recipe->written_by = auth()->user()->name; // Set the current user's name as the author
 
         // Handle image upload
         if ($request->hasFile('slika')) {
@@ -76,20 +79,24 @@ class RecipeController extends Controller
         return new RecipeResource($recipe);
     }
 
-    public function update(Request $request, Recipe $recipe)
-    {
-        if ($recipe->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized');
-        }
-        $validatedData = $request->validate([
-            'name' => 'string|max:255',
-            'description' => 'string',
-            'prep_time' => 'integer|nullable', // Dodata validacija za prep_time
-        ]);
+    public function update(Request $request, $id)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'prep_time' => 'required|integer',
+        // Add any other necessary validation rules
+    ]);
 
-        $recipe->update($validatedData);
-        return new RecipeResource($recipe);
-    }
+    $recipe = Recipe::findOrFail($id);
+    $recipe->name = $request->input('name') ?? '';  // Ensure this is being set
+    $recipe->description = $request->input('description') ?? '';
+    $recipe->prep_time = $request->input('prep_time') ?? '';
+    $recipe->opis = $request->input('opis') ?? '';
+    // Handle ingredients if necessary
+
+    $recipe->save();
+}
 
     public function destroy(Recipe $recipe)
     {

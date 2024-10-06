@@ -16,6 +16,9 @@ class RecipeResource extends JsonResource
             'ingredients' => IngredientResource::collection($this->ingredients), // Uključujemo sastojke
             'slika' => $this->slika,
             'opis' => $this->opis,
+            'created_at' => $this->created_at ? $this->created_at->format('n/j/Y') : null,  // Format as "9/16/2024"
+            'updated_at' => $this->updated_at ? $this->updated_at->format('n/j/Y') : null,  // Format as "9/16/2024"
+            'written_by' => $this->written_by ?? 'Unknown',
         ];
     }
 }

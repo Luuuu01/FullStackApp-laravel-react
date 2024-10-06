@@ -77,7 +77,7 @@ const RecipePage = () => {
             <hr />
             <div className="metadata-row">
               <span>Update: {recipe.updated_at}</span>
-              <span>Author: {recipe.author}</span>
+              <span>Author: {recipe.written_by}</span>
             </div>
             <div className="metadata-row">
               <span>Publish: {recipe.created_at}</span>

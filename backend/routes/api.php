@@ -19,8 +19,8 @@ Route::apiResource('ingredients', IngredientController::class)->only('index', 's
 // Route for fetching all recipes
 
 // Zaštićene rute (zahtevaju autentifikaciju)
+// Zaštićene rute (zahtevaju autentifikaciju)
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('recipes', RecipeController::class)->except('index', 'show'); // For authenticated users
     Route::apiResource('ingredients', IngredientController::class)->except('index', 'show');
     Route::get('/cart-items', [CartItemController::class, 'index']);
     Route::delete('/cart-items/{id}', [CartItemController::class, 'destroy']);
@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
 });
+
 
 // Rute za autentifikaciju
 Route::post('/register', [AuthController::class, 'register']);
@@ -42,6 +43,7 @@ Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('
 
 // Admin-specific routes
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::apiResource('recipes', RecipeController::class)->except('index', 'show'); // This already includes update (PUT)
     Route::post('/recipes', [RecipeController::class, 'store']); // Samo admin može dodati recept
 });
 

@@ -12,6 +12,7 @@ import Cart from "./components/cartItem";
 import AdminDashboard from "./components/adminDashboard";
 import AddRecipe from "./components/addRecipe";
 import DeleteRecipe from "./components/deleteRecipe";
+import EditRecipe from "./components/editRecipe";
 
 function App() {
 
@@ -28,11 +29,12 @@ function App() {
       <div className="cssjela">
         <Routes>
           <Route path="/admin-dashboard" element={<AdminDashboard isAdmin={isAdmin}/>} />
+          <Route path="/admin/delete-recipe" element={<DeleteRecipe />} />
+          <Route path="/admin/edit-recipe/:recipeId" element={<EditRecipe />} />
           <Route path="/" element={<NavBar token={token} />} >
           <Route path="/login" element={<Login addToken={addToken} setIsAdmin={setIsAdmin}/>} />
           <Route path="/register" element={<Register />} />
           <Route path="/admin/add-recipe" element={<AddRecipe />} />
-          <Route path="/admin/delete-recipe" element={<DeleteRecipe />} />
           <Route path="recipes" element={<Jela/>} />
           <Route path="filter" element={<Filter/>} />
           <Route path="/cart" element={<Cart/>} />

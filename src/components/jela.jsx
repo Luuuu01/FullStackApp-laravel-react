@@ -12,10 +12,10 @@ const Jela = () => {
     const [filter, setFilter] = useState(''); // For filtering by ingredient
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const [prepTimeRange, setPrepTimeRange] = useState([0, 120]); // Range slider for prep time
+    const [prepTimeRange, setPrepTimeRange] = useState([0, 300]); // Range slider for prep time
     const STEP = 5; // Step for the slider
     const MIN = 0; // Min prep time
-    const MAX = 120; // Max prep time
+    const MAX = 300; // Max prep time
     // Fetch recipes from API
     useEffect(() => {
         axios.get(`/api/recipes?page=${currentPage}`)

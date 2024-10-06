@@ -1,15 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react'; // Added useState
 import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios'; // Import axios to fetch data
 import './css/adminDashboard.css';
 
 function AdminDashboard({ isAdmin }) {
   const navigate = useNavigate();
+  const [recipes, setRecipes] = useState([]); // Define recipes state
 
   useEffect(() => {
-    console.log("Admin Status:", isAdmin);
     if (!isAdmin) {
-      navigate('/recipes'); // Redirect to /recipes if not an admin
+      navigate('/recipes'); // Redirect if not admin
     }
+
+    // Fetch recipes
+    const fetchRecipes = async () => {
+      try {
+        const response = await axios.get('/api/recipes/all');
+        setRecipes(response.data.data); // Assuming the recipes are in response.data.data
+      } catch (error) {
+        console.error('Error fetching recipes:', error);
+      }
+    };
+
+    fetchRecipes();
   }, [isAdmin, navigate]);
 
   return (
@@ -25,6 +38,16 @@ function AdminDashboard({ isAdmin }) {
           </li>
         </ul>
       </nav>
+      <div className="recipe-list">
+        <h2>Edit Existing Recipes</h2>
+        <ul>
+          {recipes.map((recipe) => (
+            <li key={recipe.id}>
+              {recipe.name} - <Link to={`/admin/edit-recipe/${recipe.id}`} className="edit-link">Izmeni</Link>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
