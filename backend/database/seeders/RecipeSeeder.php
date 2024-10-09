@@ -21,7 +21,7 @@ class RecipeSeeder extends Seeder
      */
     public function run()
     {
-
+ /*
         $brasno = Ingredient::where('name', 'Brašno')->first();
         $paradajz = Ingredient::where('name', 'Paradajz')->first();
         $sir = Ingredient::where('name', 'Mocarela sir')->first();
@@ -272,5 +272,7 @@ class RecipeSeeder extends Seeder
         $kacamak->ingredients()->attach($kukuruznoBrasno, ['quantity' => 300]); 
         $kacamak->ingredients()->attach($voda, ['quantity' => 600]);
         $kacamak->ingredients()->attach($so, ['quantity' => 10]); 
+        */
     }
+        
 }

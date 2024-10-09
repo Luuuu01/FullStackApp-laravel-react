@@ -13,6 +13,7 @@ import AdminDashboard from "./components/adminDashboard";
 import AddRecipe from "./components/addRecipe";
 import DeleteRecipe from "./components/deleteRecipe";
 import EditRecipe from "./components/editRecipe";
+import RecipeList from "./components/recipeList";
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
       <div className="cssjela">
         <Routes>
           <Route path="/admin-dashboard" element={<AdminDashboard isAdmin={isAdmin}/>} />
+          <Route path="/admin/recipe-list" element={<RecipeList />} />
           <Route path="/admin/delete-recipe" element={<DeleteRecipe />} />
           <Route path="/admin/edit-recipe/:recipeId" element={<EditRecipe />} />
           <Route path="/" element={<NavBar token={token} />} >

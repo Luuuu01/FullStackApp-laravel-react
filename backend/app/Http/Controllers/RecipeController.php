@@ -35,6 +35,9 @@ class RecipeController extends Controller
             'ingredients.*.id' => 'required|integer|exists:ingredients,id',
             'ingredients.*.quantity' => 'required|integer|min:0',
             'written_by' => 'nullable|string',
+            'sku' => 'nullable|string|unique:recipes',
+            'stock' => 'required|boolean',
+            'price' => 'nullable|numeric',
         ]);
 
         $recipe = new Recipe();
@@ -42,6 +45,9 @@ class RecipeController extends Controller
         $recipe->description = $request->description;
         $recipe->prep_time = $request->prep_time;
         $recipe->opis = $request->opis;
+        $recipe->sku = $request->sku;
+        $recipe->stock = $request->stock;
+        $recipe->price = $request->price;
         $recipe->written_by = auth()->user()->name; // Set the current user's name as the author
 
         // Handle image upload
@@ -85,11 +91,16 @@ class RecipeController extends Controller
         'name' => 'required|string|max:255',
         'description' => 'required|string',
         'prep_time' => 'required|integer',
-        // Add any other necessary validation rules
+        'sku' => 'nullable|string|unique:recipes,sku,' . $recipe->id,
+        'stock' => 'required|boolean',
+        'price' => 'nullable|numeric',
     ]);
 
     $recipe = Recipe::findOrFail($id);
-    $recipe->name = $request->input('name') ?? '';  // Ensure this is being set
+    $recipe->name = $request->input('name') ?? ''; 
+    $recipe->sku = $request->input('sku') ?? '-';
+    $recipe->stock = $request->input('stock');
+    $recipe->price = $request->input('price'); // Ensure this is being set
     $recipe->description = $request->input('description') ?? '';
     $recipe->prep_time = $request->input('prep_time') ?? '';
     $recipe->opis = $request->input('opis') ?? '';

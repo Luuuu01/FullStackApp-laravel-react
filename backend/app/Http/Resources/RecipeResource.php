@@ -19,6 +19,9 @@ class RecipeResource extends JsonResource
             'created_at' => $this->created_at ? $this->created_at->format('n/j/Y') : null,  // Format as "9/16/2024"
             'updated_at' => $this->updated_at ? $this->updated_at->format('n/j/Y') : null,  // Format as "9/16/2024"
             'written_by' => $this->written_by ?? 'Unknown',
+            'sku' => $this->sku,
+            'stock' => $this->stock,
+            'price' => $this->price,
         ];
     }
 }
