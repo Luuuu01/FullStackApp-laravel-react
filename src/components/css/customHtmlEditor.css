@@ -100,4 +100,150 @@ body{
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
   }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
   
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    max-width: 100%;
+  }
+  
+  .modal-content h3 {
+    margin-top: 0;
+  }
+  
+  .modal-content input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .modal-buttons button {
+    margin-left: 10px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .modal-buttons button:first-child {
+    background-color: #007bff;
+    color: white;
+  }
+  
+  .modal-buttons button:last-child {
+    background-color: #ccc;
+  }
+
+  .column-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 0; /* Remove gap, we'll use padding instead */
+  }
+  
+  .column {
+    flex: 1;
+    min-width: 45%;
+    padding: 0 10px; /* Add horizontal padding */
+    position: relative; /* For absolute positioning of the separator */
+  }
+  
+  /* Add separator to all columns except the last one */
+  .column:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 1px; /* Width of the separator line */
+    background-color: #ccc; /* Color of the separator line */
+  }
+  
+  /* Rest of your existing CSS styles */
+  .column > * {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  
+  .column > *:last-child {
+    margin-bottom: 0;
+  }
+  
+  .editor p, .editor div, .editor h1, .editor h2, .editor h3, .editor h4, .editor h5, .editor h6,
+  .column p, .column div, .column h1, .column h2, .column h3, .column h4, .column h5, .column h6 {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+  
+  .editor > *:last-child,
+  .column > *:last-child {
+    margin-bottom: 0;
+  }
+  
+  /* Image alignment styles */
+  .image-container {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .image-container.align-left {
+    text-align: left;
+  }
+  
+  .image-container.align-center {
+    text-align: center;
+  }
+  
+  .image-container.align-right {
+    text-align: right;
+  }
+  
+  .image-container img {
+    display: inline-block;
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Ensure alignment works within columns and editor */
+  .editor [style*="text-align: center"],
+  .column [style*="text-align: center"] {
+    text-align: center !important;
+  }
+  
+  .editor [style*="text-align: right"],
+  .column [style*="text-align: right"] {
+    text-align: right !important;
+  }
+  
+  .editor [style*="text-align: left"],
+  .column [style*="text-align: left"] {
+    text-align: left !important;
+  }
+  
+  .editor [style*="text-align: justify"],
+  .column [style*="text-align: justify"] {
+    text-align: justify !important;
+  }
