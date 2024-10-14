@@ -45,5 +45,16 @@ class ImageUploadController extends Controller
             return response()->json(['error' => 'Image upload failed'], 500);
         }
     }
+
+    public function listImages()
+    {
+        $images = Storage::files('public/images'); // Get all files in the images directory
+        $imageUrls = array_map(function ($image) {
+            return Storage::url($image); // Convert to public URLs
+        }, $images);
+        \Log::info('Images found:', $imageUrls); // Log the image URLs
+
+        return response()->json(['images' => $imageUrls]);
+    }
 }
 

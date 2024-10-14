@@ -3,15 +3,30 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import './css/adminDashboard.css';
 import AdminNavBar from './adminNavBar';
+import { useAuth } from '../authContext'; // Import the useAuth hook
 
-function AdminDashboard({ isAdmin }) {
+function AdminDashboard() {
+  const { token, isAdmin, setIsAdmin } = useAuth(); // Get isAdmin and setIsAdmin from context
   const navigate = useNavigate();
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
-    if (!isAdmin) {
-      navigate('/recipes'); // Redirect if not admin
-    }
+    const checkAdminStatus = async () => {
+      if (!isAdmin) {
+        try {
+          const response = await axios.get('/api/user', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setIsAdmin(response.data.is_admin); 
+          // Update isAdmin based on the response
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          navigate('/recipes'); // Redirect if unable to fetch user data
+        }
+      }
+    };
+
+    checkAdminStatus();
 
     // Fetch recipes (GET all recipes when visiting "Products" page)
     const fetchRecipes = async () => {
@@ -24,7 +39,9 @@ function AdminDashboard({ isAdmin }) {
     };
 
     fetchRecipes();
-  }, [isAdmin, navigate]);
+  }, [isAdmin, navigate, token, setIsAdmin]);
+
+  
 
   return (
     <div className="admin-dashboard">

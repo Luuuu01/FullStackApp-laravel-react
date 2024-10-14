@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './css/cartitem.css';
 import { Link } from 'react-router-dom';
@@ -11,7 +10,7 @@ function Cart() {
     useEffect(() => {
         const fetchCartItems = async () => {
             try {
-                const token = sessionStorage.getItem('auth_token'); // Preuzmi auth_token
+                const token = localStorage.getItem('auth_token'); // Preuzmi auth_token
                 const response = await axios.get('http://localhost:8000/api/cart-items', {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -28,7 +27,7 @@ function Cart() {
 
     const handleDelete = async (id) => {
         try {
-            const token = sessionStorage.getItem('auth_token');
+            const token = localStorage.getItem('auth_token');
             await axios.delete(`http://localhost:8000/api/cart-items/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`,

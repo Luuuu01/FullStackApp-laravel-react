@@ -1,15 +1,26 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
-import {FaBold, FaItalic, FaAlignLeft, FaAlignRight, FaAlignCenter, FaUnderline, FaAlignJustify, FaLink, FaYoutube, FaTableColumns} from 'react-icons/fa6';
+import {
+  FaBold,
+  FaItalic,
+  FaAlignLeft,
+  FaAlignRight,
+  FaAlignCenter,
+  FaUnderline,
+  FaAlignJustify,
+  FaLink,
+  FaYoutube,
+  FaTableColumns,
+} from 'react-icons/fa6';
 import { MdImage, MdOutlineFormatListNumbered } from 'react-icons/md';
 import { LiaUndoSolid, LiaRedoSolid } from 'react-icons/lia';
 import { PiListBulletsBold } from 'react-icons/pi';
-import './css/customHtmlEditor.css'; // Ensure your CSS is correctly imported
-import LinkModal from './linkModal'; // Import the LinkModal component
-import YouTubeModal from './youtubeModal'; // Import the YouTubeModal component
-import ImagePropertiesModal from './imagePropertiesModal'; // Import the ImagePropertiesModal component
+import './css/customHtmlEditor.css';
+import LinkModal from './linkModal';
+import YouTubeModal from './youtubeModal';
+import ImagePropertiesModal from './imagePropertiesModal';
 
-const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
+const CustomHtmlEditor = ({ onChange, uploadUrl, height }) => {
   const editorRef = useRef(null);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [isLinkModalOpen, setLinkModalOpen] = useState(false);
@@ -18,120 +29,202 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
   const [isYouTubeModalOpen, setYouTubeModalOpen] = useState(false);
   const [isImagePropertiesModalOpen, setImagePropertiesModalOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState(null);
-  const [isColumnMode, setColumnMode] = useState(false);
+  const [isColumnMode, setIsColumnMode] = useState(false);
 
-  const toggleColumnMode = () => {
-    setColumnMode((prev) => {
-      const newMode = !prev;
+  // Initialize the editor content with a <p> tag when the component mounts
+  useEffect(() => {
+    if (editorRef.current && editorRef.current.innerHTML.trim() === '') {
+      editorRef.current.innerHTML = '<p><br></p>';
+      // Move the cursor inside the <p> tag
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.setStart(editorRef.current.firstChild, 0);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  }, []);
+
+  // Handle input events to wrap text in <p> tags if necessary
+  const handleInput = () => {
+    const editor = editorRef.current;
+    if (editor) {
+      // Check if there are direct text nodes
+      let hasDirectTextNodes = false;
+      for (const node of editor.childNodes) {
+        if (node.nodeType === Node.TEXT_NODE && node.nodeValue.trim() !== '') {
+          hasDirectTextNodes = true;
+          break;
+        }
+      }
+
+      if (hasDirectTextNodes || editor.innerHTML.trim() === '') {
+        // Wrap all content in a <p>
+        const content = editor.innerHTML;
+        editor.innerHTML = `<p>${content}</p>`;
+        // Move the cursor inside the <p> tag
+        const selection = window.getSelection();
+        const range = document.createRange();
+        range.setStart(editor.firstChild, 0);
+        range.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+
+      onChange(editor.innerHTML);
+    }
+  };
+
+  // Ensure the cursor is inside a <p> tag when the editor gains focus
+  const handleFocus = () => {
+    const editor = editorRef.current;
+    if (editor.innerHTML.trim() === '') {
+      editor.innerHTML = '<p><br></p>';
+    }
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.setStart(editor.firstChild, 0);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  };
+
+  // Toggle column mode
+  const toggleColumns = () => {
+    setIsColumnMode((prevMode) => {
+      const newMode = !prevMode;
       if (newMode) {
-        // Create column structure if it doesn't exist
-        if (!editorRef.current.querySelector('.column-container')) {
+        // Activate column mode
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+          const range = selection.getRangeAt(0);
+          let currentNode = range.startContainer;
+
+          // Find the nearest block-level parent
+          while (
+            currentNode !== editorRef.current &&
+            (currentNode.nodeType !== Node.ELEMENT_NODE ||
+              !['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(currentNode.nodeName))
+          ) {
+            currentNode = currentNode.parentNode;
+          }
+
+          // Ensure the content is wrapped in a paragraph if it's not already
+          if (currentNode === editorRef.current) {
+            const content = editorRef.current.innerHTML;
+            editorRef.current.innerHTML = `<p>${content}</p>`;
+            currentNode = editorRef.current.firstChild;
+          }
+
           const columnContainer = document.createElement('div');
           columnContainer.classList.add('column-container');
-          columnContainer.innerHTML = '<div class="column"></div><div class="column"></div>';
-          editorRef.current.appendChild(columnContainer);
+          const column1 = document.createElement('div');
+          column1.classList.add('column');
+          const column2 = document.createElement('div');
+          column2.classList.add('column');
+          columnContainer.appendChild(column1);
+          columnContainer.appendChild(column2);
+
+          // Insert the column container after the current node
+          if (currentNode.nextSibling) {
+            editorRef.current.insertBefore(columnContainer, currentNode.nextSibling);
+          } else {
+            editorRef.current.appendChild(columnContainer);
+          }
+
+          // Move the cursor to the first column
+          const newRange = document.createRange();
+          newRange.setStart(column1, 0);
+          newRange.collapse(true);
+          selection.removeAllRanges();
+          selection.addRange(newRange);
         }
       } else {
-        // Remove column structure if it exists
-        const columnContainer = editorRef.current.querySelector('.column-container');
-        if (columnContainer) {
-          // Move all content from columns back to the main editor
-          editorRef.current.innerHTML += columnContainer.innerHTML;
-          columnContainer.remove();
-        }
+        // Deactivate column mode (additional logic can be added here if needed)
       }
       onChange(editorRef.current.innerHTML);
       return newMode;
     });
   };
 
+  // Apply alignment to text or images
   const applyAlignment = (align) => {
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
       let node = range.startContainer;
   
-      // Function to apply alignment to a node
-      const applyAlignmentToNode = (node) => {
-        if (node.nodeType === Node.TEXT_NODE) {
-          node = node.parentNode;
-        }
-        
-        if (node.classList.contains('image-container')) {
-          // Remove existing alignment classes
-          node.classList.remove('align-left', 'align-center', 'align-right');
-          // Add new alignment class
-          node.classList.add(`align-${align.toLowerCase()}`);
-        } else {
-          node.style.textAlign = align.toLowerCase();
-        }
-      };
-  
-      // Traverse up to find the appropriate container (p, div, column, or image-container)
+      // Traverse up to find the nearest element node
       while (node && node !== editorRef.current) {
         if (node.nodeType === Node.ELEMENT_NODE) {
-          if (node.classList.contains('column')) {
-            // If we're in a column, apply alignment to the direct child of the column
-            const childNode = range.commonAncestorContainer;
-            if (childNode.nodeType === Node.TEXT_NODE) {
-              applyAlignmentToNode(childNode.parentNode);
-            } else {
-              applyAlignmentToNode(childNode);
+          // Check if the node is an image or a resizable container
+          if (node.tagName === 'IMG' || node.classList.contains('resizable-container')) {
+            node.style.display = 'block'; // Ensure the image is block-level for alignment
+            
+            // Reset margins
+            node.style.marginLeft = '';
+            node.style.marginRight = '';
+            
+            // Apply alignment
+            if (align === 'left') {
+              node.style.marginLeft = '0';
+              node.style.marginRight = 'auto';
+            } else if (align === 'right') {
+              node.style.marginLeft = 'auto';
+              node.style.marginRight = '0';
+            } else if (align === 'center') {
+              node.style.marginLeft = 'auto';
+              node.style.marginRight = 'auto';
             }
             break;
-          } else if (node.classList.contains('image-container')) {
-            applyAlignmentToNode(node);
-            break;
-          } else if (['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(node.nodeName)) {
-            applyAlignmentToNode(node);
+          } else if (
+            ['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(node.nodeName)
+          ) {
+            node.style.textAlign = align.toLowerCase();
             break;
           }
         }
         node = node.parentNode;
       }
   
-      // If we haven't found a suitable container, apply to the common ancestor container
-      if (node === editorRef.current) {
-        applyAlignmentToNode(range.commonAncestorContainer);
-      }
-  
-      // Trigger change event
       onChange(editorRef.current.innerHTML);
     }
   };
 
+  // Apply formatting such as bold, italic, underline
   const applyFormatting = (format) => {
-    if (format === 'underline') format = 'underline';
-    else format = format.toLowerCase();
-    document.execCommand(format);
+    document.execCommand(format.toLowerCase());
     onChange(editorRef.current.innerHTML);
   };
 
+  // Apply heading formatting
   const applyHeading = (heading) => {
     document.execCommand('formatBlock', false, heading);
     onChange(editorRef.current.innerHTML);
     setDropdownVisible(false);
   };
 
+  // Remove heading formatting
   const removeHeadingTags = () => {
     document.execCommand('formatBlock', false, 'P');
     onChange(editorRef.current.innerHTML);
   };
 
+  // Toggle the dropdown menu for headings
   const toggleDropdown = () => {
     setDropdownVisible((prev) => !prev);
   };
 
+  // Handle keydown events, especially the Enter key
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-  
+
       const selection = window.getSelection();
       if (selection.rangeCount === 0) return;
       const range = selection.getRangeAt(0);
       const currentNode = range.startContainer;
-  
-      // Function to create a new paragraph with reset formatting
+
       const createNewParagraph = () => {
         const newParagraph = document.createElement('p');
         newParagraph.style.textAlign = 'left';
@@ -141,8 +234,7 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
         newParagraph.appendChild(document.createElement('br'));
         return newParagraph;
       };
-  
-      // Function to insert a new paragraph and set cursor
+
       const insertNewParagraph = (newParagraph, referenceNode, insertAfter = true) => {
         if (insertAfter) {
           if (referenceNode.nextSibling) {
@@ -158,114 +250,56 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
         selection.removeAllRanges();
         selection.addRange(range);
       };
-  
-      // Check if inside the editor
-      let isInsideEditor = false;
+
       let node = currentNode;
-      while (node) {
-        if (node === editorRef.current) {
-          isInsideEditor = true;
-          break;
+      let columnParent = null;
+      if (isColumnMode) {
+        while (node && node !== editorRef.current) {
+          if (node.classList && node.classList.contains('column')) {
+            columnParent = node;
+            break;
+          }
+          node = node.parentNode;
         }
-        node = node.parentNode;
       }
-  
-      if (!isInsideEditor) {
-        console.warn('Cursor is outside the editor');
-        return;
-      }
-  
-      // Check if inside a list item, image container, or heading
-      node = currentNode;
-      let specialContainer = null;
-      while (node && node !== editorRef.current) {
-        if (node.nodeName === 'LI' || 
-            (node.classList && node.classList.contains('image-container')) ||
-            /^H[1-6]$/i.test(node.nodeName)) {
-          specialContainer = node;
-          break;
-        }
-        node = node.parentNode;
-      }
-  
-      if (specialContainer) {
-        const newParagraph = createNewParagraph();
-        insertNewParagraph(newParagraph, specialContainer);
+
+      const newParagraph = createNewParagraph();
+
+      if (columnParent) {
+        columnParent.appendChild(newParagraph);
       } else {
-        if (isColumnMode) {
-          let currentColumn = null;
-          node = range.startContainer;
-  
-          // Find the current column
-          while (node && node !== editorRef.current) {
-            if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('column')) {
-              currentColumn = node;
-              break;
-            }
-            node = node.parentNode;
-          }
-  
-          if (!currentColumn) {
-            // If not in a column, find the last column
-            const columns = editorRef.current.querySelectorAll('.column');
-            currentColumn = columns[columns.length - 1];
-          }
-  
-          const newParagraph = createNewParagraph();
-  
-          // Find the nearest block-level parent within the column
-          let blockParent = range.startContainer;
-          while (blockParent && blockParent !== currentColumn && !['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(blockParent.nodeName)) {
-            blockParent = blockParent.parentNode;
-          }
-  
-          if (blockParent && blockParent !== currentColumn) {
-            insertNewParagraph(newParagraph, blockParent);
-          } else {
-            currentColumn.appendChild(newParagraph);
-            range.setStart(newParagraph, 0);
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
-          }
+        let blockParent = range.startContainer;
+        while (
+          blockParent &&
+          blockParent !== editorRef.current &&
+          !['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(blockParent.nodeName)
+        ) {
+          blockParent = blockParent.parentNode;
+        }
+
+        if (blockParent && blockParent !== editorRef.current) {
+          insertNewParagraph(newParagraph, blockParent);
         } else {
-          // Non-column mode
-          const newParagraph = createNewParagraph();
-          
-          // Find the nearest block-level parent
-          let blockParent = range.startContainer;
-          while (blockParent && blockParent !== editorRef.current && !['P', 'DIV', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(blockParent.nodeName)) {
-            blockParent = blockParent.parentNode;
-          }
-  
-          if (blockParent && blockParent !== editorRef.current) {
-            insertNewParagraph(newParagraph, blockParent);
-          } else {
-            // If we're at the root of the editor, append to the editor
-            editorRef.current.appendChild(newParagraph);
-            range.setStart(newParagraph, 0);
-            range.collapse(true);
-            selection.removeAllRanges();
-            selection.addRange(range);
-          }
+          editorRef.current.appendChild(newParagraph);
         }
       }
-  
-      // Reset text formatting
+
+      range.setStart(newParagraph, 0);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
+
       document.execCommand('removeFormat');
-  
-      // Trigger change event
       onChange(editorRef.current.innerHTML);
     }
   };
 
+  // Make images resizable
   const makeImageResizable = (img) => {
     const resizableContainer = document.createElement('div');
     resizableContainer.classList.add('resizable-container');
     resizableContainer.style.position = 'relative';
     resizableContainer.style.display = 'inline-block';
-    resizableContainer.style.width = img.width ? `${img.width}px` : 'auto';
-    resizableContainer.style.height = img.height ? `${img.height}px` : 'auto';
 
     const resizer = document.createElement('div');
     resizer.classList.add('resizer');
@@ -277,11 +311,9 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
     resizer.style.right = '0';
     resizer.style.cursor = 'se-resize';
 
-    // Move the image into the resizable container
     resizableContainer.appendChild(img);
     resizableContainer.appendChild(resizer);
 
-    // Get the original aspect ratio of the image
     const originalWidth = img.naturalWidth;
     const originalHeight = img.naturalHeight;
     const aspectRatio = originalWidth / originalHeight;
@@ -294,7 +326,7 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
 
       const startX = e.clientX;
       const startWidth = img.offsetWidth;
-      const parentElement = document.querySelector('.editor');
+      const parentElement = editorRef.current;
 
       const onMouseMove = (event) => {
         if (isResizing) {
@@ -302,11 +334,9 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
           const newWidth = startWidth + dx;
           const newHeight = newWidth / aspectRatio;
 
-          // Get the dimensions of the parent element (the `.editor` div)
           const parentWidth = parentElement.offsetWidth;
 
-          // Ensure the new dimensions do not exceed the parent container's size
-          if (newWidth <= parentWidth && newWidth > 50) { // Minimum width to prevent disappearing
+          if (newWidth <= parentWidth && newWidth > 50) {
             img.style.width = `${newWidth}px`;
             img.style.height = `${newHeight}px`;
             resizableContainer.style.width = `${newWidth}px`;
@@ -319,8 +349,6 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
         isResizing = false;
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
-
-        // Trigger change event after resizing
         onChange(editorRef.current.innerHTML);
       };
 
@@ -331,81 +359,71 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
     return resizableContainer;
   };
 
+  // Insert an image into the editor
   const insertImage = async () => {
     const input = document.createElement('input');
     input.setAttribute('type', 'file');
     input.setAttribute('accept', 'image/*');
-  
+
     input.onchange = async () => {
       const file = input.files[0];
       if (file) {
         const formData = new FormData();
-  
-        // Custom image name
+
         const customImageName = prompt('Enter the name for the image (without extension):');
         if (!customImageName) {
           alert('Image name is required!');
           return;
         }
-  
-        // Custom alt text
+
         const customAltText = prompt('Enter the alt text for the image:');
         if (customAltText === null) {
           alert('Alt text is required!');
           return;
         }
-  
+
         formData.append('file', file);
         formData.append('custom_name', customImageName);
-  
+
         try {
           const response = await axios.post(uploadUrl, formData, {
             headers: {
-              Authorization: `Bearer ${window.sessionStorage.getItem('auth_token')}`,
+              Authorization: `Bearer ${window.localStorage.getItem('auth_token')}`,
               'Content-Type': 'multipart/form-data',
             },
           });
-  
+
           if (response.data.url) {
-            const baseUrl = 'http://localhost:8000'; // Update base URL as needed
+            const baseUrl = 'http://localhost:8000';
             const imageUrl = `${baseUrl}${response.data.url}`;
-  
-            // Load the image to get its natural dimensions
+
             const img = new Image();
             img.src = imageUrl;
             img.onload = () => {
-              // Create the image element with natural dimensions
               const imgElement = document.createElement('img');
               imgElement.src = imageUrl;
               imgElement.alt = customAltText;
               imgElement.style.width = `${img.naturalWidth}px`;
               imgElement.style.height = `${img.naturalHeight}px`;
               imgElement.setAttribute('data-name', customImageName);
-  
-              // Create a container for the image
-              const imgContainer = document.createElement('div');
-              imgContainer.classList.add('image-container');
-  
-              // Call makeImageResizable here
+
+              // Wrap the image in a block-level container
+              const imgWrapper = document.createElement('div');
+              imgWrapper.classList.add('image-wrapper');
+
+              // Make the image resizable
               const resizableImgContainer = makeImageResizable(imgElement);
-              imgContainer.appendChild(resizableImgContainer);
-  
-              // Get the current selection
+              imgWrapper.appendChild(resizableImgContainer);
+
               const selection = window.getSelection();
               if (selection.rangeCount > 0) {
                 const range = selection.getRangeAt(0);
-                range.deleteContents(); // Clear any selected text before inserting the image
-  
-                // Insert the image container at the current cursor position
-                range.insertNode(imgContainer);
-  
-                // Move the selection to just after the newly inserted image
-                range.setStartAfter(imgContainer);
+                range.deleteContents();
+                range.insertNode(imgWrapper);
+                range.setStartAfter(imgWrapper);
                 range.collapse(true);
                 selection.removeAllRanges();
                 selection.addRange(range);
-  
-                // Trigger change event
                 onChange(editorRef.current.innerHTML);
               } else {
                 alert('Please place the cursor where you want to insert the image.');
@@ -422,10 +440,11 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
         alert('No file selected!');
       }
     };
-  
-    input.click(); // Open file picker
+
+    input.click();
   };
 
+  // Insert a link into the editor
   const insertLink = () => {
     const selection = window.getSelection();
     if (selection.rangeCount > 0) {
@@ -436,7 +455,6 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
         let existingLink = null;
         let node = range.startContainer;
 
-        // Traverse up to find if the selected text is already a link
         while (node && node !== editorRef.current) {
           if (node.nodeName === 'A') {
             existingLink = node;
@@ -445,13 +463,8 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
           node = node.parentNode;
         }
 
-        // Get the current URL if the selection is already a link
         const currentUrl = existingLink ? existingLink.href : '';
-
-        // Save the current range to restore it after the modal is closed
         setSavedRange(range);
-
-        // Open the link modal
         setCurrentLinkUrl(currentUrl);
         setLinkModalOpen(true);
       } else {
@@ -460,6 +473,7 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
     }
   };
 
+  // Handle saving a link from the modal
   const handleLinkSave = (url) => {
     if (savedRange) {
       const selection = window.getSelection();
@@ -473,7 +487,6 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
         let existingLink = null;
         let node = range.startContainer;
 
-        // Traverse up to find if the selected text is already a link
         while (node && node !== editorRef.current) {
           if (node.nodeName === 'A') {
             existingLink = node;
@@ -483,13 +496,11 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
         }
 
         if (url.trim() === '') {
-          // If the URL is empty, remove the link
           if (existingLink) {
             const textNode = document.createTextNode(existingLink.textContent);
             existingLink.parentNode.replaceChild(textNode, existingLink);
           }
         } else {
-          // Create or update the link
           let link;
           if (existingLink) {
             link = existingLink;
@@ -497,31 +508,29 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
           } else {
             link = document.createElement('a');
             link.href = url;
-            link.target = '_blank'; // Open link in a new tab
-            link.textContent = selectedText; // Set the selected text as the link text
-
-            // If it's a new link, insert it
-            range.deleteContents(); // Clear the selected text
-            range.insertNode(link); // Insert the link
+            link.target = '_blank';
+            link.textContent = selectedText;
+            range.deleteContents();
+            range.insertNode(link);
           }
 
-          // Move the selection to just after the newly inserted or updated link
           range.setStartAfter(link);
           range.collapse(true);
           selection.removeAllRanges();
           selection.addRange(range);
         }
 
-        // Trigger change event
         onChange(editorRef.current.innerHTML);
       }
     }
   };
 
+  // Open the YouTube modal to insert a video
   const insertYouTube = () => {
     setYouTubeModalOpen(true);
   };
 
+  // Handle saving the YouTube video from the modal
   const handleYouTubeSave = (url) => {
     const videoId = extractYouTubeVideoId(url);
     if (videoId) {
@@ -530,22 +539,19 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
       iframe.height = '315';
       iframe.src = `https://www.youtube.com/embed/${videoId}`;
       iframe.frameBorder = '0';
-      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.allow =
+        'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
       iframe.allowFullscreen = true;
 
       const selection = window.getSelection();
       if (selection.rangeCount > 0) {
         const range = selection.getRangeAt(0);
-        range.deleteContents(); // Clear any selected text before inserting the video
-        range.insertNode(iframe); // Insert the iframe
-
-        // Move the selection to just after the newly inserted iframe
+        range.deleteContents();
+        range.insertNode(iframe);
         range.setStartAfter(iframe);
         range.collapse(true);
         selection.removeAllRanges();
         selection.addRange(range);
-
-        // Trigger change event
         onChange(editorRef.current.innerHTML);
       }
     } else {
@@ -553,12 +559,15 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
     }
   };
 
+  // Extract YouTube video ID from URL
   const extractYouTubeVideoId = (url) => {
-    const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const regex =
+      /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const match = url.match(regex);
     return match ? match[1] : null;
   };
 
+  // Handle double-click on images to open properties modal
   const handleImageDoubleClick = (e) => {
     if (e.target.tagName === 'IMG') {
       setCurrentImage(e.target);
@@ -566,30 +575,31 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
     }
   };
 
+  // Handle saving image properties from the modal
   const handleImagePropertiesSave = ({ name, alt, width, height }) => {
     if (currentImage) {
       currentImage.setAttribute('data-name', name);
       currentImage.alt = alt;
       currentImage.style.width = `${width}px`;
       currentImage.style.height = `${height}px`;
-  
-      // Update the resizable container dimensions
-      const resizableContainer = currentImage.parentElement;
-      if (resizableContainer && resizableContainer.classList.contains('resizable-container')) {
+
+      const resizableContainer = currentImage.closest('.resizable-container');
+      if (resizableContainer) {
         resizableContainer.style.width = `${width}px`;
         resizableContainer.style.height = `${height}px`;
       }
-  
-      // Trigger change event
+
       onChange(editorRef.current.innerHTML);
     }
   };
 
+  // Undo the last action
   const undo = () => {
     document.execCommand('undo');
     onChange(editorRef.current.innerHTML);
   };
 
+  // Redo the last undone action
   const redo = () => {
     document.execCommand('redo');
     onChange(editorRef.current.innerHTML);
@@ -598,7 +608,6 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
   return (
     <div className="editor-container">
       <div className="toolbar">
-        {/* Undo and Redo Buttons */}
         <button onClick={undo} style={{ fontSize: '18px' }} className="htmlbuttons">
           <LiaUndoSolid />
         </button>
@@ -606,39 +615,22 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
           <LiaRedoSolid />
         </button>
 
-        {/* Heading Dropdown */}
         <div className="dropdown">
           <button onClick={toggleDropdown} style={{ fontSize: '18px' }} className="headingbuttons">
             Headers
           </button>
           {dropdownVisible && (
             <div className="dropdown-content">
-              <button
-                onClick={() => applyHeading('h1')}
-                style={{ fontSize: '20px' }}
-                className="headingbuttons"
-              >
+              <button onClick={() => applyHeading('h1')} style={{ fontSize: '20px' }} className="headingbuttons">
                 Heading 1
               </button>
-              <button
-                onClick={() => applyHeading('h2')}
-                style={{ fontSize: '18px' }}
-                className="headingbuttons"
-              >
+              <button onClick={() => applyHeading('h2')} style={{ fontSize: '18px' }} className="headingbuttons">
                 Heading 2
               </button>
-              <button
-                onClick={() => applyHeading('h3')}
-                style={{ fontSize: '16px' }}
-                className="headingbuttons"
-              >
+              <button onClick={() => applyHeading('h3')} style={{ fontSize: '16px' }} className="headingbuttons">
                 Heading 3
               </button>
-              <button
-                onClick={() => applyHeading('h4')}
-                style={{ fontSize: '15px' }}
-                className="headingbuttons"
-              >
+              <button onClick={() => applyHeading('h4')} style={{ fontSize: '15px' }} className="headingbuttons">
                 Heading 4
               </button>
               <button onClick={removeHeadingTags} className="headingbuttons">
@@ -648,30 +640,16 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
           )}
         </div>
 
-        {/* Inline Formatting Buttons */}
-        <button
-          onClick={() => applyFormatting('bold')}
-          style={{ fontSize: '18px' }}
-          className="htmlbuttons"
-        >
+        <button onClick={() => applyFormatting('bold')} style={{ fontSize: '18px' }} className="htmlbuttons">
           <FaBold />
         </button>
-        <button
-          onClick={() => applyFormatting('italic')}
-          style={{ fontSize: '18px' }}
-          className="htmlbuttons"
-        >
+        <button onClick={() => applyFormatting('italic')} style={{ fontSize: '18px' }} className="htmlbuttons">
           <FaItalic />
         </button>
-        <button
-          onClick={() => applyFormatting('underline')}
-          style={{ fontSize: '18px' }}
-          className="htmlbuttons"
-        >
+        <button onClick={() => applyFormatting('underline')} style={{ fontSize: '18px' }} className="htmlbuttons">
           <FaUnderline />
         </button>
 
-        {/* Image and Link Buttons */}
         <button onClick={insertImage} style={{ fontSize: '18px' }} className="htmlbuttons">
           <MdImage />
         </button>
@@ -679,12 +657,10 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
           <FaLink />
         </button>
 
-        {/* YouTube Embed Button */}
         <button onClick={insertYouTube} style={{ fontSize: '18px' }} className="htmlbuttons">
           <FaYoutube />
         </button>
 
-        {/* List Buttons */}
         <button
           onClick={() => {
             document.execCommand('insertUnorderedList');
@@ -706,53 +682,41 @@ const CustomHtmlEditor = ({ onChange, uploadUrl }) => {
           <MdOutlineFormatListNumbered />
         </button>
 
-        {/* Text Alignment Buttons */}
-        <button
-          onClick={() => applyAlignment('Left')}
-          style={{ fontSize: '18px' }}
-          className="htmlbuttons"
-        >
+        <button onClick={() => applyAlignment('left')} style={{ fontSize: '18px' }} className="htmlbuttons">
           <FaAlignLeft />
         </button>
-        <button
-          onClick={() => applyAlignment('Center')}
-          style={{ fontSize: '18px' }}
-          className="htmlbuttons"
-        >
+        <button onClick={() => applyAlignment('center')} style={{ fontSize: '18px' }} className="htmlbuttons">
           <FaAlignCenter />
         </button>
-        <button
-          onClick={() => applyAlignment('Right')}
-          style={{ fontSize: '18px' }}
-          className="htmlbuttons"
-        >
+        <button onClick={() => applyAlignment('right')} style={{ fontSize: '18px' }} className="htmlbuttons">
           <FaAlignRight />
         </button>
-        <button
-          onClick={() => applyAlignment('Full')}
-          style={{ fontSize: '18px' }}
-          className="htmlbuttons"
-        >
+        <button onClick={() => applyAlignment('justify')} style={{ fontSize: '18px' }} className="htmlbuttons">
           <FaAlignJustify />
         </button>
-        <button 
-            onClick={toggleColumnMode} 
-            style={{ 
-              fontSize: '18px', 
-              backgroundColor: isColumnMode ? '#FFA500' : 'white' 
-            }} 
-            className="htmlbuttons">
-            <FaTableColumns />
+
+        <button
+          onClick={toggleColumns}
+          style={{
+            fontSize: '18px',
+            backgroundColor: isColumnMode ? '#FFA500' : 'white',
+          }}
+          className="htmlbuttons"
+        >
+          <FaTableColumns />
         </button>
       </div>
       <div
         className="editor"
         contentEditable
         ref={editorRef}
-        onInput={() => onChange(editorRef.current.innerHTML)}
+        onInput={handleInput}
         onKeyDown={handleKeyDown}
         onDoubleClick={handleImageDoubleClick}
+        onFocus={handleFocus}
+        style={{ minHeight: height }}
       />
+      {/* Modals */}
       <LinkModal
         isOpen={isLinkModalOpen}
         currentUrl={currentLinkUrl}

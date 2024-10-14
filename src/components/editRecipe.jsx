@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
 import { useParams } from 'react-router-dom';
-import styles from './css/AddRecipe.module.css';
+import styles from './css/addRecipe.css';
 import CustomHtmlEditor from './customHtmlEditor';
 
 const EditRecipe = () => {
@@ -113,7 +113,7 @@ const EditRecipe = () => {
     try {
         const response = await axios.put(`/api/recipes/${recipeId}`, recipeData, {
             headers: {
-                Authorization: `Bearer ${window.sessionStorage.getItem('auth_token')}`,
+                Authorization: `Bearer ${window.localStorage.getItem('auth_token')}`,
                 'Content-Type': 'application/json', // Set the Content-Type to JSON
             },
         });

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import "./css/login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { TbPasswordUser, TbWritingSign } from "react-icons/tb";
 import axios from "axios";
+import './css/login.css';
+import { useAuth } from "../authContext"; // Import the useAuth hook
 
-const Login = ({ addToken, setIsAdmin }) => {
+const Login = () => {
+  const { addToken, setIsAdmin } = useAuth(); // Get addToken and setIsAdmin from context
   let navigate = useNavigate();
   const [loginData, setLoginData] = useState({
     email: "",
@@ -27,12 +29,12 @@ const Login = ({ addToken, setIsAdmin }) => {
   
     try {
       const response = await axios.post("api/login", loginData);
+      console.log("Login response:", response.data); // Log the response
       if (response.data.success) {
         const { token, is_admin } = response.data; // Get is_admin from response
-        window.sessionStorage.setItem("auth_token", token);
-        addToken(token);
-        setIsAdmin(is_admin); // Set admin status
-        navigate(is_admin ? "/admin-dashboard" : "/recipes"); // Navigate based on admin status
+        addToken(token); // This will now store the token in localStorage
+        setIsAdmin(is_admin === 1); // Set admin status based on the response
+        navigate(is_admin === 1 ? "/admin-dashboard" : "/recipes"); // Navigate based on admin status
         setMessage('Login successful!');
         setStatus('success');
       } else {
@@ -40,7 +42,8 @@ const Login = ({ addToken, setIsAdmin }) => {
         setStatus('error');
       }
     } catch (error) {
-      setMessage(error.response?.data?.message || 'An error occurred.');
+      console.error("Error during login:", error); // Log the error for debugging
+      setMessage(error.response?.data?.message || 'An error occurred.'); // Display the error message
       setStatus('error');
     } finally {
       setLoading(false);

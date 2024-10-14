@@ -1,8 +1,7 @@
 import "./App.css";
-import { useState } from "react";
-import Jela from "./components/jela";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate} from "react-router-dom";
 import NavBar from "./components/navBar";
+import Jela from "./components/jela";
 import Filter from "./components/filter";
 import Login from "./components/login";
 import Register from "./components/register";
@@ -14,38 +13,35 @@ import AddRecipe from "./components/addRecipe";
 import DeleteRecipe from "./components/deleteRecipe";
 import EditRecipe from "./components/editRecipe";
 import RecipeList from "./components/recipeList";
+import { AuthProvider } from './authContext'; // Import AuthProvider
+import MediaLibrary from "./components/mediaLibrary";
 
 function App() {
-
-  const [token,setToken]=useState();
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  function addToken(token){
-    setToken(token);
-  }
-
   return (
-
-    <BrowserRouter>
-      <div className="cssjela">
-        <Routes>
-          <Route path="/admin-dashboard" element={<AdminDashboard isAdmin={isAdmin}/>} />
-          <Route path="/admin/recipe-list" element={<RecipeList />} />
-          <Route path="/admin/delete-recipe" element={<DeleteRecipe />} />
-          <Route path="/admin/edit-recipe/:recipeId" element={<EditRecipe />} />
-          <Route path="/" element={<NavBar token={token} />} >
-          <Route path="/login" element={<Login addToken={addToken} setIsAdmin={setIsAdmin}/>} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/admin/add-recipe" element={<AddRecipe />} />
-          <Route path="recipes" element={<Jela/>} />
-          <Route path="filter" element={<Filter/>} />
-          <Route path="/cart" element={<Cart/>} />
-          <Route path="/recipe/:id" element={<RecipePage />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          </Route>
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <AuthProvider> {/* Wrap the entire app with AuthProvider */}
+      <BrowserRouter>
+        <div className="cssjela">
+          <NavBar /> {/* Move NavBar outside of Routes to ensure it's always visible */}
+          <Routes>
+            <Route path="/admin-dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/recipe-list" element={<RecipeList />} />
+            <Route path="/admin/delete-recipe" element={<DeleteRecipe />} />
+            <Route path="/admin/media-library" element={<MediaLibrary />} />
+            <Route path="/admin/add-recipe" element={<AddRecipe />} />
+            <Route path="/admin/edit-recipe/:recipeId" element={<EditRecipe />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/recipes" element={<Jela />} />
+            <Route path="/filter" element={<Filter />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/recipe/:id" element={<RecipePage />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/" element={<Navigate to="/recipes" />} /> {/* Redirect to recipes on root */}
+          </Routes>
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
+
 export default App;

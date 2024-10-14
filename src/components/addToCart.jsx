@@ -5,7 +5,7 @@ import "./css/addToCart.css";
 const AddToCartButton = ({ recipeId }) => {
     const handleAddToCart = async () => {
         try {
-            const token = sessionStorage.getItem('auth_token'); // Preuzmi auth_token iz sessionStorage
+            const token = localStorage.getItem('auth_token'); // Preuzmi auth_token iz sessionStorage
             const response = await axios.post(
                 '/api/cart-items',
                 { recipe_id: recipeId },

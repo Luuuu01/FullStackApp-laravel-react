@@ -9,7 +9,7 @@ const DeleteRecipe = () => {
       try {
         const response = await axios.get('http://localhost:8000/api/recipes', {
           headers: {
-            Authorization: `Bearer ${window.sessionStorage.getItem('auth_token')}`,
+            Authorization: `Bearer ${window.localStorage.getItem('auth_token')}`,
           },
         });
         setRecipes(response.data.data);
@@ -25,7 +25,7 @@ const DeleteRecipe = () => {
     try {
       await axios.delete(`api/recipes/${id}`, {
         headers: {
-          Authorization: `Bearer ${window.sessionStorage.getItem('auth_token')}`,
+          Authorization: `Bearer ${window.localStorage.getItem('auth_token')}`,
         },
       });
       setRecipes(recipes.filter(recipe => recipe.id !== id));
